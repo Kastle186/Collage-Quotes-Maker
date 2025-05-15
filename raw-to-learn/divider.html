@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Resizable Split View</title>
+  <style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+    }
+
+    #left {
+        background: #f0f0f0;
+        width: 50%;
+        min-width: 100px;
+    }
+
+    #divider {
+        width: 5px;
+        cursor: col-resize;
+        background: #aaa;
+    }
+
+    #right {
+        background: #d0d0d0;
+        flex-grow: 1;
+        min-width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div id="left">Left pane</div>
+  <div id="divider"></div>
+  <div id="right">Right pane</div>
+
+  <script>
+    const divider = document.getElementById('divider');
+    const left = document.getElementById('left');
+    let isResizing = false;
+
+    divider.addEventListener('mousedown', function (e) {
+        isResizing = true;
+        document.body.style.cursor = 'col-resize';
+    });
+
+    document.addEventListener('mousemove', function (e) {
+        if (!isResizing) return;
+
+        const newLeftWidth = e.clientX;
+        if (newLeftWidth > 100 && newLeftWidth < window.innerWidth - 100) {
+            left.style.width = `${newLeftWidth}px`;
+        }
+    });
+
+    document.addEventListener('mouseup', function () {
+        isResizing = false;
+        document.body.style.cursor = 'default';
+    });
+  </script>
+</body>
+</html>

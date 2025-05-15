@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Collage Quotes Maker</title>
+  <style>
+    #collage {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        border: 2px dashed #ccc;
+        padding: 10px;
+        min-height: 200px;
+        margin-bottom: 20px;
+    }
+    .collage-image {
+        max-width: 150px;
+        max-height: 150px;
+        object-fit: cover;
+        border: 1px solid #999;
+    }
+    canvas {
+        display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Collage Quotes Maker</h1>
+  <input type="file" id="imageInput" multiple accept="image/*">
+  <div id="collage"></div>
+  <button id="downloadBtn">Download Collage</button>
+
+  <canvas id="canvas" width="800" height="600"></canvas>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
