@@ -1,0 +1,43 @@
+/* All the styles I'm using written by hand! */
+
+/* Side Panel With Collage Options (Dimensions, Layout, etc) */
+
+.options-panel {
+    height: 100%;
+    width: 50%;
+    background-color: #333;
+    left: 0%; /* Initially visible */
+    overflow-x: scroll;
+    overflow-y: scroll;
+    padding-top: 5%;
+    position: fixed;
+    transition: 0.5s;
+}
+
+.close-btn {
+  border: none;
+  background: none;
+  color: white;
+  cursor: pointer;
+  font-size: 20px;
+  position: absolute;
+  top: 5%;
+  right: 5%;
+}
+
+.open-btn {
+  border: none;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
+  display: none;
+  font-size: 20px;
+  margin: 2%;
+}
+
+/* Main Workspace */
+
+.collage-workspace {
+    margin-left: 50%; /* It starts with the sidebar on. */
+    transition: margin-left 0.5s
+}
