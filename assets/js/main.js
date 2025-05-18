@@ -1,18 +1,20 @@
 'use strict';
 
 const optionsPanel = document.getElementById("optionspanel");
-const openBtn = document.getElementById("openbtn");
-const closeBtn = document.getElementById("closebtn");
+const toggleBtn = document.getElementById("togglebtn");
 const workspace = document.getElementById("workspace");
 
-openBtn.addEventListener("click", () => {
-    optionsPanel.style.left = "0";
-    workspace.style.marginLeft = "50%";
-    openBtn.style.display = "none";
-});
+toggleBtn.addEventListener("click", () => {
+    optionsPanel.classList.toggle("hidden");
 
-closeBtn.addEventListener("click", () => {
-    optionsPanel.style.left = "-50%";
-    workspace.style.marginLeft = "0%";
-    openBtn.style.display = "inline-block";
+    if (optionsPanel.classList.contains("hidden"))
+    {
+        toggleBtn.textContent = "☰ Configure";
+        workspace.style.marginLeft = "2%";
+    }
+    else
+    {
+        toggleBtn.textContent = "✖ Collapse";
+        workspace.style.marginLeft = "30%";
+    }
 });

@@ -4,40 +4,32 @@
 
 .options-panel {
     height: 100%;
-    width: 50%;
+    width: 28%;
     background-color: #333;
-    left: 0%; /* Initially visible */
+    left: 0; /* Initially visible */
     overflow-x: scroll;
-    overflow-y: scroll;
     padding-top: 5%;
     position: fixed;
+    transform: translateX(0);
     transition: 0.5s;
 }
 
-.close-btn {
-  border: none;
-  background: none;
-  color: white;
-  cursor: pointer;
-  font-size: 20px;
-  position: absolute;
-  top: 5%;
-  right: 5%;
+.options-panel.hidden {
+    transform: translateX(-100%);
 }
 
-.open-btn {
-  border: none;
-  background-color: #333;
-  color: white;
-  cursor: pointer;
-  display: none;
-  font-size: 20px;
-  margin: 2%;
+.toggle-btn {
+    border: none;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 20px;
 }
 
 /* Main Workspace */
 
 .collage-workspace {
-    margin-left: 50%; /* It starts with the sidebar on. */
+    margin-left: 2%;
     transition: margin-left 0.5s
 }
