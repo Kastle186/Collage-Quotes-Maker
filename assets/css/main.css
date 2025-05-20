@@ -60,8 +60,15 @@ ul.options-list li input {
     margin-left: 2%;
 }
 
-.subtitle-style {
+h2.subtitle-style {
     margin-left: 5%;
+    margin-top: -5px;
+}
+
+h3.subtitle-style {
+    margin-bottom: 1%;
+    margin-left: 5%;
+    margin-top: 5%;
 }
 
 .collage-workspace {
