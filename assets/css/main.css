@@ -1,14 +1,21 @@
 /* All the styles I'm using written by hand! */
 
+/* Constants! */
+
+:root {
+    --canvas-width: 1920px;
+    --canvas-height: 1080px;
+}
+
 /* Side Panel With Collage Options (Dimensions, Layout, etc) */
 
 .options-panel {
     height: 100%;
     width: 28%;
-    background-color: #333;
+    background-color: #999;
     left: 0; /* Initially visible */
     overflow-x: scroll;
-    padding-top: 5%;
+    padding-top: 2%;
     position: fixed;
     transform: translateX(0);
     transition: 0.5s;
@@ -27,9 +34,44 @@
     font-size: 20px;
 }
 
+ul.options-list {
+    list-style-type: none;
+    margin: 0 -10%;
+}
+
+ul.options-list li {
+    border-bottom: 1px solid #ddd;
+    font-size: 19px;
+    margin-left: 10%;
+    margin-right: 50%;
+    padding: 15px 3%;
+}
+
+ul.options-list li input {
+    font-size: 19px;
+    height: 20px;
+    margin-left: 5%;
+    width: 75px;
+}
+
 /* Main Workspace */
+
+.title-style {
+    margin-left: 2%;
+}
+
+.subtitle-style {
+    margin-left: 5%;
+}
 
 .collage-workspace {
     margin-left: 2%;
     transition: margin-left 0.5s
+}
+
+.collage-canvas {
+    border: 1px solid black;
+    display: block;
+    width: var(--canvas-width);
+    height: var(--canvas-height);
 }

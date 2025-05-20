@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Canvas Resize</title>
+    <style>
+        :root {
+            --canvas-width: 1920px;
+            --canvas-height: 1080px;
+        }
+
+        canvas {
+            width: var(--canvas-width);
+            height: var(--canvas-height);
+            border: 1px solid black;
+            display: block;
+            margin-top: 10px;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<label>
+    Width:
+    <input type="number" id="widthInput">
+</label>
+
+<label>
+    Height:
+    <input type="number" id="heightInput">
+</label>
+
+<canvas id="myCanvas"></canvas>
+
+<script>
+    // Constants
+    const DEFAULT_WIDTH = 1920;
+    const DEFAULT_HEIGHT = 1080;
+
+    // Get elements
+    const widthInput = document.getElementById('widthInput');
+    const heightInput = document.getElementById('heightInput');
+    const canvas = document.getElementById('myCanvas');
+
+    // Set initial values
+    widthInput.value = DEFAULT_WIDTH;
+    heightInput.value = DEFAULT_HEIGHT;
+    resizeCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+    // Event listeners
+    widthInput.addEventListener('input', updateCanvasSize);
+    heightInput.addEventListener('input', updateCanvasSize);
+
+    function updateCanvasSize() {
+        const newWidth = widthInput.value || DEFAULT_WIDTH;
+        const newHeight = heightInput.value || DEFAULT_HEIGHT;
+        resizeCanvas(newWidth, newHeight);
+    }
+
+    function resizeCanvas(w, h) {
+        // Update canvas drawing size (in pixels)
+        canvas.width = w;
+        canvas.height = h;
+
+        // Update canvas style (CSS size)
+        document.documentElement.style.setProperty('--canvas-width', w + 'px');
+        document.documentElement.style.setProperty('--canvas-height', h + 'px');
+    }
+</script>
+</body>
+</html>

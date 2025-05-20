@@ -8,16 +8,25 @@
 </head>
 
 <body>
-  <h1 style="margin-left: 1%">Collage Quotes Maker</h1>
+  <h1 class="title-style">Collage Quotes Maker</h1>
 
   <div id="optionspanel" class="options-panel hidden">
-    <p>Test text!</p>
+    <header>
+      <h3 class="subtitle-style">Customization Options</h3>
+    </header>
+
+    <!-- NEXT FEATURE: Adjust the canvas to the screen of the client. -->
+    <ul class="options-list">
+      <li><label for="width-txtbx">Width: </label><input type="number" id="width-txtbx" value="1920"></li>
+      <li><label for="height-txtbx">Height: </label><input type="number" id="height-txtbx" value="1080"></li>
+    </ul>
   </div>
 
   <div id="workspace" class="collage-workspace">
     <button id="togglebtn" class="toggle-btn">☰ Configure</button>
     <h2>Make your edit here!</h2>
     <p>The canvas will go here.</p>
+    <canvas id="thecanvas" class="collage-canvas"></canvas>
   </div>
 
   <script src="assets/js/main.js"></script>
