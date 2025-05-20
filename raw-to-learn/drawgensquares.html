@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grid with Hover Effects</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #f0f0f0;
+      font-family: sans-serif;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(10, 40px);
+      gap: 8px;
+      justify-content: start;
+    }
+
+    .square {
+      width: 40px;
+      height: 40px;
+      background-color: #3498db;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+      will-change: transform, background-color;
+    }
+
+    .square:hover {
+      background-color: #2ecc71;
+      transform: scale(1.15);
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+<h1>Grid with Hover Effects</h1>
+<div class="grid" id="grid"></div>
+
+<script defer>
+  document.addEventListener("DOMContentLoaded", () => {
+    const grid = document.getElementById("grid");
+    const fragment = document.createDocumentFragment();
+
+    for (let i = 0; i < 100; i++) {
+      const square = document.createElement("div");
+      square.className = "square";
+      fragment.appendChild(square);
+    }
+
+    grid.appendChild(fragment);
+  });
+</script>
+</body>
+</html>
