@@ -10,12 +10,16 @@
 <body>
   <h1 class="title-style">Collage Quotes Maker</h1>
 
+  <!-- START OPTIONS PANEL -->
+
+  <!-- Full sliding panel containing the collage options: Width, Height, Layout. -->
   <div id="optionspanel" class="options-panel hidden">
     <header>
       <h2 class="subtitle-style">Customization Options</h2>
     </header>
 
-    <!-- NEXT FEATURE: Adjust the canvas to the screen of the client. -->
+    <!-- Collage Dimensions: JavaScript reads this to render the canvas with
+         these measurements in real-time. -->
     <h3 class="subtitle-style">Dimensions</h3>
     <ul class="options-list">
       <li><label for="width-txtbx">Width: </label><input type="number" id="width-txtbx" value="1920"></li>
@@ -25,12 +29,18 @@
     <h3 class="subtitle-style">Layouts</h3>
   </div>
 
+  <!-- END OPTIONS PANEL -->
+
+  <!-- START MAIN WORKSPACE -->
+
   <div id="workspace" class="collage-workspace">
     <button id="togglebtn" class="toggle-btn">☰ Configure</button>
     <h2>Make your edit here!</h2>
     <p>The canvas will go here.</p>
     <canvas id="thecanvas" class="collage-canvas"></canvas>
   </div>
+
+  <!-- END MAIN WORKSPACE -->
 
   <script src="assets/js/main.js"></script>
 </body>
