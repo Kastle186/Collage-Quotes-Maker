@@ -1,6 +1,10 @@
 'use strict';
 
-/* General Configuration! */
+/*
+ * ************************************ *
+ * General Options Panel Configuration! *
+ * ************************************ *
+ */
 
 const optionsPanel = document.getElementById("optionspanel");
 const toggleBtn = document.getElementById("togglebtn");
@@ -21,7 +25,92 @@ toggleBtn.addEventListener("click", () => {
     }
 });
 
-/* Canvas Configuration! */
+/*
+ * ************************** *
+ * Layouts Grid Configuration *
+ * ************************** *
+ */
+
+// Doing it this way for now because it is entirely front-end. Will add code to read the files programmatically
+// if/when I add a backend server.
+const layouts = [
+    "assets/images/2x2-Layout.webp"
+];
+
+const grid = document.querySelector(".layouts-grid");
+
+// It works! Now, I just need to scale the images properly :)
+// for (let layout of layouts)
+// {
+//     const imgLandscape = document.createElement('img');
+//     const imgPortrait = document.createElement('img');
+//
+//     imgLandscape.src = layout;
+//     imgLandscape.alt = "Landscape Layout Tag";
+//     imgLandscape.className = "landscape-layout";
+//
+//     imgPortrait.src = layout;
+//     imgPortrait.alt = "Portrait Layout Tag";
+//     imgPortrait.className = "portrait-layout";
+//
+//     grid.appendChild(imgLandscape);
+//     grid.appendChild(imgPortrait);
+// }
+
+for (let i = 0; i < layouts.length; i++)
+{
+    let layout = layouts[i];
+
+    const landscapeWrapper = document.createElement("div");
+    const portraitWrapper = document.createElement("div");
+
+    landscapeWrapper.className = "layout-thumbnail";
+    portraitWrapper.className = "layout-thumbnail";
+
+    const imgLandscape = document.createElement("img");
+    const imgPortrait = document.createElement("img");
+
+    imgLandscape.src = layout;
+    imgLandscape.alt = "Landscape Layout Placeholder Tag";
+    imgLandscape.className = "landscape";
+    landscapeWrapper.appendChild(imgLandscape);
+
+    imgPortrait.src = layout;
+    imgPortrait.alt = "Portrait Layout Placeholder Tag";
+    imgPortrait.className = "portrait";
+    portraitWrapper.appendChild(imgPortrait);
+
+    grid.appendChild(landscapeWrapper);
+    grid.appendChild(portraitWrapper);
+}
+
+// for (let layout of layouts) {
+//     const grid = document.querySelector(".layouts-grid");
+//
+//     const landscapeWrapper = document.createElement('div');
+//     const portraitWrapper = document.createElement('div');
+//
+//     const imgLandscape = document.createElement('img');
+//     imgLandscape.src = layout;
+//     imgLandscape.alt = "Landscape Layout Tag";
+//     imgLandscape.className = "landscape-layout";
+//     landscapeWrapper.appendChild(imgLandscape);
+//
+//     const imgPortrait = document.createElement('img');
+//     imgPortrait.src = layout;
+//     imgPortrait.alt = "Portrait Layout Tag";
+//     imgPortrait.className = "portrait-layout";
+//     portraitWrapper.appendChild(imgPortrait);
+//
+//     grid.appendChild(landscapeWrapper);
+//     grid.appendChild(portraitWrapper);
+// }
+
+/*
+ * ********************* *
+ * Canvas Configuration! *
+ * ********************* *
+ */
 
 const DEFAULT_WIDTH = 1920;
 const DEFAULT_HEIGHT = 1080;

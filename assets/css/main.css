@@ -54,6 +54,56 @@ ul.options-list li input {
     width: 75px;
 }
 
+.layouts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5%;
+}
+
+.layout-thumbnail {
+    display: flex;
+    justify-content: center;
+    padding-left: 5%;
+    padding-top: 20%;
+}
+
+.layout-thumbnail img.landscape {
+    padding-left: 20%;
+    width: 100%;
+}
+
+.layout-thumbnail img.portrait {
+    transform: rotate(90deg);
+    width: 100%;
+}
+
+/*.landscape-layout {*/
+/*    padding-left: 5%;*/
+/*    padding-top: 10%;*/
+/*    width: 45%;*/
+/*}*/
+
+/*.portrait-layout {*/
+/*    transform: rotate(90deg);*/
+/*    transform-origin: top left;*/
+/*    width: 50%;*/
+/*}*/
+
+/*.layouts-grid > div {*/
+/*    margin-bottom: 2rem; !* or padding if you prefer *!*/
+/*}*/
+
+/*.image-wrapper {*/
+/*    !* You can also add width, height, and overflow to make them more precise! *!*/
+/*    margin-bottom: 2rem; !* layout spacing *!*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*}*/
+
+/*.image-wrapper img {*/
+/*    width: 80%; !* image-specific style *!*/
+/*}*/
+
 /* Main Workspace */
 
 .title-style {
