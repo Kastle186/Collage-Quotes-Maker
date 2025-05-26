@@ -77,33 +77,6 @@ ul.options-list li input {
     width: 100%;
 }
 
-/*.landscape-layout {*/
-/*    padding-left: 5%;*/
-/*    padding-top: 10%;*/
-/*    width: 45%;*/
-/*}*/
-
-/*.portrait-layout {*/
-/*    transform: rotate(90deg);*/
-/*    transform-origin: top left;*/
-/*    width: 50%;*/
-/*}*/
-
-/*.layouts-grid > div {*/
-/*    margin-bottom: 2rem; !* or padding if you prefer *!*/
-/*}*/
-
-/*.image-wrapper {*/
-/*    !* You can also add width, height, and overflow to make them more precise! *!*/
-/*    margin-bottom: 2rem; !* layout spacing *!*/
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*}*/
-
-/*.image-wrapper img {*/
-/*    width: 80%; !* image-specific style *!*/
-/*}*/
-
 /* Main Workspace */
 
 .title-style {

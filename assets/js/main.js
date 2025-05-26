@@ -39,24 +39,6 @@ const layouts = [
 
 const grid = document.querySelector(".layouts-grid");
 
-// It works! Now, I just need to scale the images properly :)
-// for (let layout of layouts)
-// {
-//     const imgLandscape = document.createElement('img');
-//     const imgPortrait = document.createElement('img');
-//
-//     imgLandscape.src = layout;
-//     imgLandscape.alt = "Landscape Layout Tag";
-//     imgLandscape.className = "landscape-layout";
-//
-//     imgPortrait.src = layout;
-//     imgPortrait.alt = "Portrait Layout Tag";
-//     imgPortrait.className = "portrait-layout";
-//
-//     grid.appendChild(imgLandscape);
-//     grid.appendChild(imgPortrait);
-// }
-
 for (let i = 0; i < layouts.length; i++)
 {
     let layout = layouts[i];
@@ -83,28 +65,6 @@ for (let i = 0; i < layouts.length; i++)
     grid.appendChild(landscapeWrapper);
     grid.appendChild(portraitWrapper);
 }
-
-// for (let layout of layouts) {
-//     const grid = document.querySelector(".layouts-grid");
-//
-//     const landscapeWrapper = document.createElement('div');
-//     const portraitWrapper = document.createElement('div');
-//
-//     const imgLandscape = document.createElement('img');
-//     imgLandscape.src = layout;
-//     imgLandscape.alt = "Landscape Layout Tag";
-//     imgLandscape.className = "landscape-layout";
-//     landscapeWrapper.appendChild(imgLandscape);
-//
-//     const imgPortrait = document.createElement('img');
-//     imgPortrait.src = layout;
-//     imgPortrait.alt = "Portrait Layout Tag";
-//     imgPortrait.className = "portrait-layout";
-//     portraitWrapper.appendChild(imgPortrait);
-//
-//     grid.appendChild(landscapeWrapper);
-//     grid.appendChild(portraitWrapper);
-// }
 
 /*
  * ********************* *
