@@ -58,6 +58,7 @@ ul.options-list li input {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 5%;
+    margin-top: -5%;
 }
 
 .layout-thumbnail {
@@ -68,8 +69,8 @@ ul.options-list li input {
 }
 
 .layout-thumbnail img.landscape {
-    padding-left: 20%;
-    width: 100%;
+    padding-left: 10%;
+    width: 75%;
 }
 
 .layout-thumbnail img.portrait {

@@ -37,33 +37,50 @@ const layouts = [
     "assets/images/2x2-Layout.webp"
 ];
 
+// Layouts dictionary. Might move them to a JSON or something later on. Or at least
+// their own file.
+const layoutArrangements = {
+    '2x2-Layout': []
+};
+
 const grid = document.querySelector(".layouts-grid");
 
 for (let i = 0; i < layouts.length; i++)
 {
-    let layout = layouts[i];
+    const layout = layouts[i];
+    const layoutName = layout.split(/[/\\]/)
+                                    .pop()
+                                    .split('.')
+                                    .slice(0, -1)
+                                    .join('.');
 
     const landscapeWrapper = document.createElement("div");
-    const portraitWrapper = document.createElement("div");
+    // const portraitWrapper = document.createElement("div");
 
     landscapeWrapper.className = "layout-thumbnail";
-    portraitWrapper.className = "layout-thumbnail";
+    // portraitWrapper.className = "layout-thumbnail";
 
     const imgLandscape = document.createElement("img");
-    const imgPortrait = document.createElement("img");
+    // const imgPortrait = document.createElement("img");
 
     imgLandscape.src = layout;
     imgLandscape.alt = "Landscape Layout Placeholder Tag";
     imgLandscape.className = "landscape";
+    // imgLandscape.addEventListener("click", drawLayout);
     landscapeWrapper.appendChild(imgLandscape);
 
-    imgPortrait.src = layout;
-    imgPortrait.alt = "Portrait Layout Placeholder Tag";
-    imgPortrait.className = "portrait";
-    portraitWrapper.appendChild(imgPortrait);
+    // imgPortrait.src = layout;
+    // imgPortrait.alt = "Portrait Layout Placeholder Tag";
+    // imgPortrait.className = "portrait";
+    // imgPortrait.addEventListener("click", drawLayout);
+    // portraitWrapper.appendChild(imgPortrait);
 
     grid.appendChild(landscapeWrapper);
-    grid.appendChild(portraitWrapper);
+    // grid.appendChild(portraitWrapper);
+}
+
+function drawLayout()
+{
 }
 
 /*

@@ -1,0 +1,4 @@
+  1) Draw into the canvas programmatically.
+* 2) Make the Layouts clickable in the menu.
+  2a) Draw the clicked layout on the canvas.
+  3) Upload pictures into each slot of the canvas.
