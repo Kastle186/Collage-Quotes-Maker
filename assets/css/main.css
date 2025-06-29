@@ -68,14 +68,9 @@ ul.options-list li input {
     padding-top: 20%;
 }
 
-.layout-thumbnail img.landscape {
+.layout-thumbnail img {
     padding-left: 10%;
     width: 75%;
-}
-
-.layout-thumbnail img.portrait {
-    transform: rotate(90deg);
-    width: 100%;
 }
 
 /* Main Workspace */
