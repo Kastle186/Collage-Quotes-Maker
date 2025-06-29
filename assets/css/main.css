@@ -69,6 +69,7 @@ ul.options-list li input {
 }
 
 .layout-thumbnail img {
+    cursor: pointer;
     padding-left: 10%;
     width: 75%;
 }

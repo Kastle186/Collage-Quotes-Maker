@@ -4,13 +4,15 @@
  * ************************** *
  */
 
+import { THE_CANVAS } from "./canvas.js";
+
 // For complex layouts that don't necessarily follow a specific pattern, we will
-// be using a different field called 'custom' or something like that. That will
+// be using a different field called 'customPattern' or something like that. That will
 // contain the values of the individual rectangles. Then, drawLayout() in canvas.js
 // will choose. If the data has dimX and dimY, then it calculates the rectangles.
 // If it has custom, then it will simply follow those instructions.
 
-const layouts = {
+const LAYOUTS = {
     "2x2": {
         "imgPath": "assets/images/2x2-Layout.webp",
         "dimX": 2,
@@ -22,7 +24,7 @@ export function loadLayouts()
 {
     const grid = document.querySelector(".layouts-grid");
 
-    for (let [layoutName, layoutParams] of Object.entries(layouts))
+    for (let [layoutName, layoutParams] of Object.entries(LAYOUTS))
     {
         const thumbImgPath = layoutParams["imgPath"];
         const wrapper = document.createElement("div");
@@ -32,6 +34,12 @@ export function loadLayouts()
         thumbElem.src = thumbImgPath;
         thumbElem.alt = "Layout Placeholder Tag";
         thumbElem.dataset.layoutId = layoutName;
+
+        thumbElem.addEventListener("click", (evt) => {
+            const key = evt.target.dataset.layoutId;
+            const params = LAYOUTS[key];
+            THE_CANVAS.drawLayout(params);
+        });
 
         wrapper.appendChild(thumbElem);
         grid.appendChild(wrapper);
