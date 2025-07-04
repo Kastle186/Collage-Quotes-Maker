@@ -45,63 +45,63 @@ class CollageCanvas {
     }
 
     drawLayout(layoutParams) {
-        // If we arrived here from resizing an empty canvas, then there's no need
-        // to even attempt to do all the calculations.
-        if (this.#slots.length === 0 && layoutParams == null)
-            return;
+        // If we arrived here from selecting a new layout, then do all the
+        // calculations. But if we got here from a canvas resize, then we only
+        // have to redraw the layout.
+        if (layoutParams != null) {
+            this.#slots = [];
 
-        this.#slots = [];
+            if (!("customPattern" in layoutParams)) {
+                const numSlotsX = layoutParams["dimX"];
+                const numSlotsY = layoutParams["dimY"];
 
-        if (!("customPattern" in layoutParams)) {
-            const numSlotsX = layoutParams["dimX"];
-            const numSlotsY = layoutParams["dimY"];
+                // Generate the pattern from the dimensions' information (percentage).
+                // The formula is the following:
+                // slotDimSize = (canvas / numSlots) - spacing - (spacing / numSlots)
 
-            // Generate the pattern from the dimensions' information.
-            // The formula is the following:
-            // slotDimSize = (canvas / numSlots) - spacing - (spacing / numSlots)
+                let slotWidth = (1.0 / numSlotsX) - this.#spacing - (this.#spacing / numSlotsX);
+                let slotHeight = (1.0 / numSlotsY) - this.#spacing - (this.#spacing / numSlotsY);
 
-            let slotWidth = (1.0 / numSlotsX) - this.#spacing - (this.#spacing / numSlotsX);
-            let slotHeight = (1.0 / numSlotsY) - this.#spacing - (this.#spacing / numSlotsY);
+                for (let i = 0; i < numSlotsX; i++) {
+                    let xStart = this.#spacing + ((this.#spacing + slotWidth) * i);
+                    let yStart = 0;
 
-            // Convert the fractions to pixels because strokeRect() only allows
-            // dimensions in px units.
-
-            slotWidth *= this.#theCanvas.width;
-            slotHeight *= this.#theCanvas.height;
-
-            const spacingPixelsX = this.#spacing * this.#theCanvas.width;
-            const spacingPixelsY = this.#spacing * this.#theCanvas.height;
-
-            for (let i = 0; i < numSlotsX; i++) {
-                let xStart = spacingPixelsX + ((spacingPixelsX + slotWidth) * i);
-                let yStart = 0;
-
-                for (let j = 0; j < numSlotsY; j++) {
-                    yStart += spacingPixelsY;
-                    const slotObj = new Rectangle(xStart, yStart, slotWidth, slotHeight);
-                    this.#slots.push(slotObj);
-                    yStart += slotHeight;
+                    for (let j = 0; j < numSlotsY; j++) {
+                        yStart += this.#spacing;
+                        const slotObj = new Rectangle(xStart, yStart, slotWidth, slotHeight);
+                        this.#slots.push(slotObj);
+                        yStart += slotHeight;
+                    }
                 }
-            }
-        }
-        else {
-            const pattern = layoutParams["customPattern"];
+            } else {
+                // FUTURE FEATURE!
 
-            for (const rect of pattern) {
-                const xPixels = this.#theCanvas.width * (rect.x / 100.0);
-                const yPixels = this.#theCanvas.height * (rect.y / 100.0);
-                const widthPixels = (rect.width / 100.0) * this.#theCanvas.width;
-                const heightPixels = (rect.height / 100.0) * this.#theCanvas.height;
-
-                this.#slots.push(new Rectangle(xPixels, yPixels, widthPixels, heightPixels));
+                // const pattern = layoutParams["customPattern"];
+                //
+                // for (const rect of pattern) {
+                //     const xPixels = rect.x / 100.0;
+                //     const yPixels = rect.y / 100.0;
+                //     const widthPixels = rect.width / 100.0;
+                //     const heightPixels = rect.height / 100.0;
+                //
+                //     this.#slots.push(new Rectangle(xPixels, yPixels, widthPixels, heightPixels));
+                // }
             }
         }
 
         const ctx = this.#theCanvas.getContext("2d");
 
         for (const slot of this.#slots) {
+            // Convert the fractions to pixels because strokeRect() only allows
+            // dimensions in px units.
+
+            const xPixels = slot.x * this.#theCanvas.width;
+            const yPixels = slot.y * this.#theCanvas.height;
+            const widthPixels = slot.width * this.#theCanvas.width;
+            const heightPixels = slot.height * this.#theCanvas.height;
+
             ctx.strokeStyle = "blue";
-            ctx.strokeRect(slot.x, slot.y, slot.width, slot.height);
+            ctx.strokeRect(xPixels, yPixels, widthPixels, heightPixels);
         }
     }
 
@@ -115,6 +115,10 @@ class CollageCanvas {
 
         document.documentElement.style.setProperty("--canvas-width", newWidth + "px");
         document.documentElement.style.setProperty("--canvas-height", newHeight + "px");
+
+        // If there is already a set layout, then redraw it with the new dimensions.
+        if (this.#slots.length > 0)
+            this.drawLayout(null);
     }
 
     #update(widthInput, heightInput) {
