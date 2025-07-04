@@ -7,8 +7,7 @@
 const DEFAULT_WIDTH = 1920;
 const DEFAULT_HEIGHT = 1080;
 
-class Rectangle
-{
+class Rectangle {
     constructor(originX, originY, width, height)
     {
         this.x = originX;
@@ -46,6 +45,13 @@ class CollageCanvas {
     }
 
     drawLayout(layoutParams) {
+        // If we arrived here from resizing an empty canvas, then there's no need
+        // to even attempt to do all the calculations.
+        if (this.#slots.length === 0 && layoutParams == null)
+            return;
+
+        this.#slots = [];
+
         if (!("customPattern" in layoutParams)) {
             const numSlotsX = layoutParams["dimX"];
             const numSlotsY = layoutParams["dimY"];
@@ -78,15 +84,24 @@ class CollageCanvas {
                 }
             }
         }
+        else {
+            const pattern = layoutParams["customPattern"];
 
-        // Update the canvas info and draw the layout here.
-        console.log(layoutParams["dimX"] + ", " + layoutParams["dimY"]);
-        for (let i = 0; i < this.#slots.length; i++) {
-            console.log("\n" + (i + 1) + ")");
-            console.log("X Start: " + this.#slots[i].x);
-            console.log("Y Start: " + this.#slots[i].y);
-            console.log("Width: " + this.#slots[i].width);
-            console.log("Height: " + this.#slots[i].height);
+            for (const rect of pattern) {
+                const xPixels = this.#theCanvas.width * (rect.x / 100.0);
+                const yPixels = this.#theCanvas.height * (rect.y / 100.0);
+                const widthPixels = (rect.width / 100.0) * this.#theCanvas.width;
+                const heightPixels = (rect.height / 100.0) * this.#theCanvas.height;
+
+                this.#slots.push(new Rectangle(xPixels, yPixels, widthPixels, heightPixels));
+            }
+        }
+
+        const ctx = this.#theCanvas.getContext("2d");
+
+        for (const slot of this.#slots) {
+            ctx.strokeStyle = "blue";
+            ctx.strokeRect(slot.x, slot.y, slot.width, slot.height);
         }
     }
 
