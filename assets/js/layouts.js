@@ -67,7 +67,7 @@ function initializeLayoutElement(layoutName, layoutThumbnailPath) {
 
         if (key) {
             const params = LAYOUTS[key];
-            THE_CANVAS.traceLayout(params);
+            THE_CANVAS.traceLayout(params, true);
         }
     });
 

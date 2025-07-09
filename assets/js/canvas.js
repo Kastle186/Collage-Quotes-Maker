@@ -37,19 +37,24 @@ class CollageCanvas {
     initialize() {
         const widthInput = document.getElementById("width-txtbx");
         const heightInput = document.getElementById("height-txtbx");
+        const spacingInput = document.getElementById("spacing-txtbx");
 
-        this.#draw();
+        this.#draw(false);
 
         widthInput.addEventListener("input", () => {
-            this.#update(widthInput, heightInput);
+            this.#update(widthInput, heightInput, spacingInput);
         });
 
         heightInput.addEventListener("input", () => {
-            this.#update(widthInput, heightInput);
+            this.#update(widthInput, heightInput, spacingInput);
+        });
+
+        spacingInput.addEventListener("input", () => {
+            this.#update(widthInput, heightInput, spacingInput);
         });
     }
 
-    #draw() {
+    #draw(needsSlotsCalculation) {
         const theCanvas = document.getElementById("thecanvas");
 
         // The values newWidth and newHeight are already validated here, as this
@@ -64,30 +69,46 @@ class CollageCanvas {
 
         // If there is already a set layout, then redraw it with the new dimensions.
         if (this.#slots.length > 0)
-            this.traceLayout(null);
+            this.traceLayout(null, needsSlotsCalculation);
     }
 
-    #update(widthInput, heightInput) {
+    #update(widthInput, heightInput, spacingInput) {
         const newWidth = parseInt(widthInput.value, 10) || DEFAULT_WIDTH;
         const newHeight = parseInt(heightInput.value, 10) || DEFAULT_HEIGHT;
+        const newSpacing = parseInt(spacingInput.value, 10) / 100.0 || DEFAULT_SPACING;
 
-        if (newWidth !== this.#width || newHeight !== this.#height) {
+        const widthChanged = newWidth !== this.#width;
+        const heightChanged = newHeight !== this.#height;
+        const spacingChanged = newSpacing !== this.#spacing;
+
+        if (widthChanged || heightChanged || spacingChanged) {
             this.#width = Math.max(newWidth, 1);
             this.#height = Math.max(newHeight, 1);
-            this.#draw();
+
+            if (spacingChanged)
+                this.#spacing = Math.max(newSpacing, 0.01);
+
+            this.#draw(spacingChanged);
         }
     }
 
-    traceLayout(layoutParams) {
-        // If we arrived here from selecting a new layout, then do all the
-        // calculations. But if we got here from a canvas resize, then we only
-        // have to redraw the layout.
-        if (layoutParams != null) {
+    traceLayout(layoutParams, needsSlotsCalculation) {
+        // If we arrived here from a new layout, then update the CollageCanvas
+        // object with the new layout's parameters dictionary.
+
+        if (layoutParams != null)
+            this.#layout = layoutParams;
+
+        // If we arrived here from selecting a new layout or changed the slots'
+        // spacing, then we have to do all the calculations. But if we got here
+        // solely from a canvas resize, then we only have to redraw the layout.
+
+        if (needsSlotsCalculation) {
             this.#slots = [];
 
-            if (!("customPattern" in layoutParams)) {
-                const numSlotsX = layoutParams["dimX"];
-                const numSlotsY = layoutParams["dimY"];
+            if (!("customPattern" in this.#layout)) {
+                const numSlotsX = this.#layout["dimX"];
+                const numSlotsY = this.#layout["dimY"];
 
                 // Generate the pattern from the dimensions' information (percentage).
                 // The formula is the following:
@@ -110,7 +131,7 @@ class CollageCanvas {
             } else {
                 // FUTURE FEATURE!
 
-                // const pattern = layoutParams["customPattern"];
+                // const pattern = this.#layout["customPattern"];
                 //
                 // for (const rect of pattern) {
                 //     const xPixels = rect.x / 100.0;
