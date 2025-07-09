@@ -12,6 +12,9 @@ import { THE_CANVAS } from "./canvas.js";
 // will choose. If the data has dimX and dimY, then it calculates the rectangles.
 // If it has custom, then it will simply follow those instructions.
 
+// FUTURE: Evaluate whether we can store this in a JSON file or something like that
+//         instead of hard-coding a global variable.
+
 const LAYOUTS = {
     "2x2": {
         "imgPath": "assets/images/2x2-Layout.webp",
@@ -26,56 +29,48 @@ export function loadLayouts()
 
     for (let [layoutName, layoutParams] of Object.entries(LAYOUTS))
     {
-        const thumbImgPath = layoutParams["imgPath"];
-        const wrapper = document.createElement("div");
-        wrapper.className = "layout-thumbnail";
+        const layoutElemWrapper = initializeLayoutElement(
+            layoutName,
+            layoutParams["imgPath"]);
 
-        const thumbElem = document.createElement("img");
-        thumbElem.src = thumbImgPath;
-        thumbElem.alt = "Layout Placeholder Tag";
-        thumbElem.dataset.layoutId = layoutName;
-
-        thumbElem.addEventListener("click", (evt) => {
-            const key = evt.target.dataset.layoutId;
-            const params = LAYOUTS[key];
-            THE_CANVAS.drawLayout(params);
-        });
-
-        wrapper.appendChild(thumbElem);
-        grid.appendChild(wrapper);
+        grid.appendChild(layoutElemWrapper);
     }
 }
 
-// const layouts = {
-//   layout1: [
-//     { x: 10, y: 10, width: 100, height: 50 },
-//     { x: 120, y: 10, width: 50, height: 100 }
-//   ],
-//   layout2: [
-//     { x: 20, y: 20, width: 80, height: 80 }
-//   ],
-//   // Add more layouts here
-// };
+function initializeLayoutElement(layoutName, layoutThumbnailPath) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "layout-thumbnail";
 
-// <img src="thumb1.png" data-layout-id="layout1" class="thumbnail" />
-// <img src="thumb2.png" data-layout-id="layout2" class="thumbnail" />
+    const thumbElem = document.createElement("img");
+    thumbElem.src = layoutThumbnailPath;
+    thumbElem.alt = "Layout Placeholder Tag";
+    thumbElem.dataset.layoutId = layoutName;
 
-// document.querySelectorAll('.thumbnail').forEach(thumb => {
-//   thumb.addEventListener('click', (event) => {
-//     const layoutId = event.target.dataset.layoutId;
-//     const rectangles = layouts[layoutId];
-//     if (rectangles) {
-//       drawRectangles(rectangles);
-//     }
-//   });
-// });
+    wrapper.addEventListener('mouseenter', () => {
+        wrapper.classList.add("hovered");
+    });
 
-// function drawRectangles(rects) {
-//   const canvas = document.getElementById('myCanvas');
-//   const ctx = canvas.getContext('2d');
-//   ctx.clearRect(0, 0, canvas.width, canvas.height);
+    wrapper.addEventListener('mouseleave', () => {
+        wrapper.classList.remove("hovered");
+    });
 
-//   rects.forEach(rect => {
-//     ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
-//   });
-// }
+    wrapper.addEventListener('click', (evt) => {
+        wrapper.classList.remove("hovered");
+
+        setTimeout(() => {
+            if (wrapper.matches(":hover")) {
+                wrapper.classList.add("hovered");
+            }
+        }, 150);
+
+        const key = evt.target.dataset.layoutId;
+
+        if (key) {
+            const params = LAYOUTS[key];
+            THE_CANVAS.traceLayout(params);
+        }
+    });
+
+    wrapper.appendChild(thumbElem);
+    return wrapper;
+}

@@ -6,10 +6,10 @@
 
 const DEFAULT_WIDTH = 1920;
 const DEFAULT_HEIGHT = 1080;
+const DEFAULT_SPACING = 0.05;
 
 class Rectangle {
-    constructor(originX, originY, width, height)
-    {
+    constructor(originX, originY, width, height) {
         this.x = originX;
         this.y = originY;
         this.width = width;
@@ -18,22 +18,27 @@ class Rectangle {
 }
 
 class CollageCanvas {
-    #theCanvas;
-    #slots;
+    #width;
+    #height;
     #spacing;
 
+    #slots;
+    #layout;
+
     constructor() {
-        this.#theCanvas = null;
+        this.#width = DEFAULT_WIDTH;
+        this.#height = DEFAULT_HEIGHT;
+        this.#spacing = DEFAULT_SPACING;
+
         this.#slots = [];
-        this.#spacing = 0.05;
+        this.#layout = null;
     }
 
     initialize() {
-        this.#theCanvas = document.getElementById("thecanvas");
         const widthInput = document.getElementById("width-txtbx");
         const heightInput = document.getElementById("height-txtbx");
 
-        this.#resize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this.#draw();
 
         widthInput.addEventListener("input", () => {
             this.#update(widthInput, heightInput);
@@ -44,7 +49,36 @@ class CollageCanvas {
         });
     }
 
-    drawLayout(layoutParams) {
+    #draw() {
+        const theCanvas = document.getElementById("thecanvas");
+
+        // The values newWidth and newHeight are already validated here, as this
+        // function's only callers (this.initialize and this.#update) take care of
+        // guaranteeing valid inputs.
+
+        theCanvas.width = this.#width;
+        theCanvas.height = this.#height;
+
+        document.documentElement.style.setProperty("--canvas-width", this.#width + "px");
+        document.documentElement.style.setProperty("--canvas-height", this.#height + "px");
+
+        // If there is already a set layout, then redraw it with the new dimensions.
+        if (this.#slots.length > 0)
+            this.traceLayout(null);
+    }
+
+    #update(widthInput, heightInput) {
+        const newWidth = parseInt(widthInput.value, 10) || DEFAULT_WIDTH;
+        const newHeight = parseInt(heightInput.value, 10) || DEFAULT_HEIGHT;
+
+        if (newWidth !== this.#width || newHeight !== this.#height) {
+            this.#width = Math.max(newWidth, 1);
+            this.#height = Math.max(newHeight, 1);
+            this.#draw();
+        }
+    }
+
+    traceLayout(layoutParams) {
         // If we arrived here from selecting a new layout, then do all the
         // calculations. But if we got here from a canvas resize, then we only
         // have to redraw the layout.
@@ -89,57 +123,22 @@ class CollageCanvas {
             }
         }
 
-        const ctx = this.#theCanvas.getContext("2d");
+        const theCanvas = document.getElementById("thecanvas");
+        const ctx = theCanvas.getContext("2d");
 
         for (const slot of this.#slots) {
             // Convert the fractions to pixels because strokeRect() only allows
             // dimensions in px units.
 
-            const xPixels = slot.x * this.#theCanvas.width;
-            const yPixels = slot.y * this.#theCanvas.height;
-            const widthPixels = slot.width * this.#theCanvas.width;
-            const heightPixels = slot.height * this.#theCanvas.height;
+            const xPixels = slot.x * theCanvas.width;
+            const yPixels = slot.y * theCanvas.height;
+            const widthPixels = slot.width * theCanvas.width;
+            const heightPixels = slot.height * theCanvas.height;
 
             ctx.strokeStyle = "blue";
             ctx.strokeRect(xPixels, yPixels, widthPixels, heightPixels);
         }
     }
-
-    #resize(newWidth, newHeight) {
-        // The values newWidth and newHeight are already validated here, as this
-        // function's only callers (this.initialize and this.#update) take care of
-        // guaranteeing valid inputs.
-
-        this.#theCanvas.width = newWidth;
-        this.#theCanvas.height = newHeight;
-
-        document.documentElement.style.setProperty("--canvas-width", newWidth + "px");
-        document.documentElement.style.setProperty("--canvas-height", newHeight + "px");
-
-        // If there is already a set layout, then redraw it with the new dimensions.
-        if (this.#slots.length > 0)
-            this.drawLayout(null);
-    }
-
-    #update(widthInput, heightInput) {
-        const newWidth = parseInt(widthInput.value, 10) || DEFAULT_WIDTH;
-        const newHeight = parseInt(heightInput.value, 10) || DEFAULT_HEIGHT;
-
-        if (newWidth !== this.#theCanvas.width || newHeight !== this.#theCanvas.height)
-            this.#resize(Math.max(newWidth, 1), Math.max(newHeight, 1));
-    }
 }
 
 export const THE_CANVAS = new CollageCanvas();
-
-// Make a Canvas Object:
-// - Width
-// - Height
-// - Array of Rectangles
-//
-// Rectangle Object?
-// - StartX
-// - StartY
-// - Width
-// - Height
-// - Image?
