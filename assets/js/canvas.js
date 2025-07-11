@@ -4,8 +4,8 @@
  * ******************** *
  */
 
-const DEFAULT_WIDTH = 1920;
-const DEFAULT_HEIGHT = 1080;
+const DEFAULT_WIDTH = 1280;
+const DEFAULT_HEIGHT = 720;
 const DEFAULT_SPACING = 0.05;
 
 class Rectangle {
@@ -38,6 +38,7 @@ class CollageCanvas {
         const widthInput = document.getElementById("width-txtbx");
         const heightInput = document.getElementById("height-txtbx");
         const spacingInput = document.getElementById("spacing-txtbx");
+        const clearButton = document.getElementById("clearbtn");
 
         this.#draw(false);
 
@@ -52,44 +53,10 @@ class CollageCanvas {
         spacingInput.addEventListener("input", () => {
             this.#update(widthInput, heightInput, spacingInput);
         });
-    }
 
-    #draw(needsSlotsCalculation) {
-        const theCanvas = document.getElementById("thecanvas");
-
-        // The values newWidth and newHeight are already validated here, as this
-        // function's only callers (this.initialize and this.#update) take care of
-        // guaranteeing valid inputs.
-
-        theCanvas.width = this.#width;
-        theCanvas.height = this.#height;
-
-        document.documentElement.style.setProperty("--canvas-width", this.#width + "px");
-        document.documentElement.style.setProperty("--canvas-height", this.#height + "px");
-
-        // If there is already a set layout, then redraw it with the new dimensions.
-        if (this.#slots.length > 0)
-            this.traceLayout(null, needsSlotsCalculation);
-    }
-
-    #update(widthInput, heightInput, spacingInput) {
-        const newWidth = parseInt(widthInput.value, 10) || DEFAULT_WIDTH;
-        const newHeight = parseInt(heightInput.value, 10) || DEFAULT_HEIGHT;
-        const newSpacing = parseInt(spacingInput.value, 10) / 100.0 || DEFAULT_SPACING;
-
-        const widthChanged = newWidth !== this.#width;
-        const heightChanged = newHeight !== this.#height;
-        const spacingChanged = newSpacing !== this.#spacing;
-
-        if (widthChanged || heightChanged || spacingChanged) {
-            this.#width = Math.max(newWidth, 1);
-            this.#height = Math.max(newHeight, 1);
-
-            if (spacingChanged)
-                this.#spacing = Math.max(newSpacing, 0.01);
-
-            this.#draw(spacingChanged);
-        }
+        clearButton.addEventListener("click", () => {
+            this.#clear();
+        });
     }
 
     traceLayout(layoutParams, needsSlotsCalculation) {
@@ -159,6 +126,53 @@ class CollageCanvas {
             ctx.strokeStyle = "blue";
             ctx.strokeRect(xPixels, yPixels, widthPixels, heightPixels);
         }
+    }
+
+    #draw(needsSlotsCalculation) {
+        const theCanvas = document.getElementById("thecanvas");
+
+        // The values newWidth and newHeight are already validated here, as this
+        // function's only callers (this.initialize and this.#update) take care of
+        // guaranteeing valid inputs.
+
+        theCanvas.width = this.#width;
+        theCanvas.height = this.#height;
+
+        document.documentElement.style.setProperty("--canvas-width", this.#width + "px");
+        document.documentElement.style.setProperty("--canvas-height", this.#height + "px");
+
+        // If there is already a set layout, then redraw it with the new dimensions.
+        if (this.#slots.length > 0)
+            this.traceLayout(null, needsSlotsCalculation);
+    }
+
+    #update(widthInput, heightInput, spacingInput) {
+        const newWidth = parseInt(widthInput.value, 10) || DEFAULT_WIDTH;
+        const newHeight = parseInt(heightInput.value, 10) || DEFAULT_HEIGHT;
+        const newSpacing = parseInt(spacingInput.value, 10) / 100.0 || DEFAULT_SPACING;
+
+        const widthChanged = newWidth !== this.#width;
+        const heightChanged = newHeight !== this.#height;
+        const spacingChanged = newSpacing !== this.#spacing;
+
+        if (widthChanged || heightChanged || spacingChanged) {
+            this.#width = Math.max(newWidth, 1);
+            this.#height = Math.max(newHeight, 1);
+
+            if (spacingChanged)
+                this.#spacing = Math.max(newSpacing, 0.01);
+
+            this.#draw(spacingChanged);
+        }
+    }
+
+    #clear() {
+        this.#slots = [];
+        this.#layout = null;
+
+        const theCanvas = document.getElementById("thecanvas");
+        const ctx = theCanvas.getContext("2d");
+        ctx.clearRect(0, 0, theCanvas.width, theCanvas.height);
     }
 }
 
