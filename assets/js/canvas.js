@@ -4,6 +4,8 @@
  * ******************** *
  */
 
+import { makeUploadOnChangeHandler } from "./utils.js";
+
 const DEFAULT_WIDTH = 1280;
 const DEFAULT_HEIGHT = 720;
 const DEFAULT_SPACING = 0.05;
@@ -32,7 +34,11 @@ class ImageSlot {
         ctx.strokeRect(this.#xPx, this.#yPx, this.#widthPx, this.#heightPx);
 
         if (this.image != null) {
-            // Add the functionality to draw the image inside the slot here.
+            ctx.drawImage(this.image,
+                          this.#xPx,
+                          this.#yPx,
+                          this.#widthPx,
+                          this.#heightPx);
         }
     }
 
@@ -45,6 +51,13 @@ class ImageSlot {
         this.#yPx = this.yPct * canvasHeight;
         this.#widthPx = this.widthPct * canvasWidth;
         this.#heightPx = this.heightPct * canvasHeight;
+    }
+
+    wasClicked(clickX, clickY) {
+        return clickX >= this.#xPx &&
+            clickX <= this.#xPx + this.#widthPx &&
+            clickY >= this.#yPx &&
+            clickY <= this.#yPx + this.#heightPx;
     }
 }
 
@@ -73,6 +86,7 @@ class CollageCanvas {
         const heightInput = document.getElementById("height-txtbx");
         const spacingInput = document.getElementById("spacing-txtbx");
         const clearButton = document.getElementById("clearbtn");
+        const uploadButton = document.getElementById("uploadlayer");
 
         widthInput.addEventListener('input', () => {
             this.#update(widthInput, heightInput, spacingInput);
@@ -89,6 +103,23 @@ class CollageCanvas {
         clearButton.addEventListener('click', () => {
             this.#slots = [];
             this.#clear();
+        });
+
+        this.#theCanvas.addEventListener('click', (evt) => {
+            const rect = this.#theCanvas.getBoundingClientRect();
+            const clickedX = evt.clientX - rect.left;
+            const clickedY = evt.clientY - rect.top;
+
+            const imgSlotClicked = this.#slots.find(s =>
+                s.wasClicked(clickedX, clickedY)
+            );
+
+            if (imgSlotClicked) {
+                uploadButton.onchange = makeUploadOnChangeHandler(
+                    imgSlotClicked,
+                    this.#theCanvas);
+                uploadButton.click();
+            }
         });
     }
 
