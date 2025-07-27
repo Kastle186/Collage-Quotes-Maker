@@ -30,16 +30,8 @@ class ImageSlot {
 
     draw(canvas) {
         const ctx = canvas.getContext('2d');
-        ctx.strokeStyle = "blue";
-        ctx.strokeRect(this.#xPx, this.#yPx, this.#widthPx, this.#heightPx);
-
-        if (this.image != null) {
-            ctx.drawImage(this.image,
-                          this.#xPx,
-                          this.#yPx,
-                          this.#widthPx,
-                          this.#heightPx);
-        }
+        this.#drawFrame(ctx, "blue");
+        this.#drawImage(ctx);
     }
 
     // We need this function and the pixel values because strokeRect() only allows
@@ -58,6 +50,40 @@ class ImageSlot {
             clickX <= this.#xPx + this.#widthPx &&
             clickY >= this.#yPx &&
             clickY <= this.#yPx + this.#heightPx;
+    }
+
+    #drawFrame(ctx, color) {
+        ctx.strokeStyle = color;
+        ctx.strokeRect(this.#xPx, this.#yPx, this.#widthPx, this.#heightPx);
+    }
+
+    #drawImage(ctx) {
+        if (this.image == null)
+            return;
+
+        const imgAspectRatio = this.image.width / this.image.height;
+        const slotAspectRatio = this.#widthPx / this.#heightPx;
+
+        let resWidth, resHeight, resX, resY;
+
+        // Crop the center section we will be zooming in of the image, to fit
+        // the slot's aspect ratio, without deforming it.
+
+        if (imgAspectRatio > slotAspectRatio) {
+            resWidth = this.image.height * slotAspectRatio;
+            resHeight = this.image.height;
+            resX = (this.image.width - resWidth) / 2;
+            resY = 0;
+        }
+        else {
+            resWidth = this.image.width;
+            resHeight = this.image.width / slotAspectRatio;
+            resX = 0;
+            resY = (this.image.height - resHeight) / 2;
+        }
+
+        ctx.drawImage(this.image, resX, resY, resWidth, resHeight,
+            this.#xPx, this.#yPx, this.#widthPx, this.#heightPx);
     }
 }
 
