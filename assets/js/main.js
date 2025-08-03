@@ -1,9 +1,9 @@
 'use strict';
 
-import { THE_CANVAS } from "./canvas.js";
-import { initUserInterface } from "./ui.js";
+import { initUIAndCanvas } from './ui.js';
 
-document.addEventListener("DOMContentLoaded", () => {
-    initUserInterface();
-    THE_CANVAS.initialize();
+// TODO: Add method descriptions to their JSDoc's.
+
+document.addEventListener('DOMContentLoaded', () => {
+    initUIAndCanvas();
 });

@@ -13,7 +13,7 @@
   <!-- START OPTIONS PANEL -->
 
   <!-- Full sliding panel containing the collage options: Width, Height, Spacing, Layout. -->
-  <div id="optionspanel" class="options-panel hidden">
+  <div id="options-panel" class="options-panel hidden">
     <header>
       <h2 class="subtitle-style">Customization Options</h2>
     </header>
@@ -22,9 +22,9 @@
          these measurements in real-time. -->
     <h3 class="subtitle-style">Dimensions</h3>
     <ul class="options-list">
-      <li><label for="width-txtbx">Width: </label><input type="number" id="width-txtbx" value="1280"></li>
-      <li><label for="height-txtbx">Height: </label><input type="number" id="height-txtbx" value="720"></li>
-      <li><label for="spacing-txtbx">Spacing %: </label><input type="number" id="spacing-txtbx" value="5"></li>
+      <li><label for="width-input">Width: </label><input type="number" id="width-input" value="1280"></li>
+      <li><label for="height-input">Height: </label><input type="number" id="height-input" value="720"></li>
+      <li><label for="spacing-input">Spacing %: </label><input type="number" id="spacing-input" value="5"></li>
     </ul>
 
     <h3 class="subtitle-style">Layouts</h3>
@@ -34,7 +34,7 @@
     </div>
 
     <div class="clear-button">
-      <button id="clearbtn">Clear</button>
+      <button id="clear-btn">Clear</button>
     </div>
   </div>
 
@@ -43,11 +43,11 @@
   <!-- START MAIN WORKSPACE -->
 
   <div id="workspace" class="collage-workspace">
-    <button id="togglebtn" class="toggle-btn">☰ Configure</button>
+    <button id="toggle-btn" class="toggle-btn">☰ Configure</button>
     <h2>Make your edit here!</h2>
     <p>The canvas will go here.</p>
-    <canvas id="thecanvas" class="collage-canvas"></canvas>
-    <input type="file" id="uploadlayer" accept="image/*" style="display: none" />
+    <canvas id="the-canvas" class="collage-canvas"></canvas>
+    <input type="file" id="upload-layer" accept="image/*" style="display: none" />
   </div>
 
   <!-- END MAIN WORKSPACE -->
