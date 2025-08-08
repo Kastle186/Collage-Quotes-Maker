@@ -79,7 +79,7 @@ function initCanvasControls(theCanvas) {
     };
 
     const clearButton = document.getElementById('clear-btn');
-    // const bgColorPicker = document.getElementById('bg-color');
+    const bgColorPicker = document.getElementById('bg-color-picker');
 
     let rafId;
 
@@ -98,6 +98,10 @@ function initCanvasControls(theCanvas) {
 
     clearButton.addEventListener('click', () => {
         theCanvas.clear(true);
+    });
+
+    bgColorPicker.addEventListener('change', (event) => {
+        theCanvas.update('bg-color', event.target.value);
     });
 }
 

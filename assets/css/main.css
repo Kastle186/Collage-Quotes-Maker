@@ -68,7 +68,7 @@ ul.options-list li input {
 .layouts-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    # gap: 5%;
+    gap: 5%;
     margin-top: -5vh;
 }
 

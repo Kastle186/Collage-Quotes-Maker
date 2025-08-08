@@ -60,7 +60,7 @@ export class CollageCanvas {
 
         this.#canvasCtx = this.#canvasObj.getContext('2d');
         this.#fillBackground();
-        this.#createSlotsListener();
+        this.#createSlotsListeners();
     }
 
     /**
@@ -125,7 +125,11 @@ export class CollageCanvas {
                 spacingChanged = true;
                 break;
 
-            case 'bgcolor':
+            case 'bg-color':
+                this.#bgColor = newValue;
+                break;
+
+            case 'frame-color':
                 break;
 
             default:
@@ -140,7 +144,7 @@ export class CollageCanvas {
     /**
      *
      */
-    #createSlotsListener() {
+    #createSlotsListeners() {
         const uploadButton = document.getElementById('upload-layer');
 
         this.#canvasObj.addEventListener('click', (event) => {
@@ -149,7 +153,7 @@ export class CollageCanvas {
             const clickedY = event.clientY - rect.top;
 
             const imgSlotClicked = this.#slots.find(s =>
-                s.hadMouseInteraction(clickedX, clickedY)
+                s.hasMouseOver(clickedX, clickedY)
             );
 
             if (imgSlotClicked) {
@@ -159,6 +163,10 @@ export class CollageCanvas {
                 );
                 uploadButton.click();
             }
+        });
+
+        this.#canvasObj.addEventListener('mousemove', (event) => {
+            console.log(`Slots animations coming soon!`);
         });
     }
 
@@ -214,3 +222,136 @@ export class CollageCanvas {
         }
     }
 }
+
+// <canvas id="myCanvas" width="600" height="400" style="border:1px solid black;"></canvas>
+//
+// <script>
+// const canvas = document.getElementById("myCanvas");
+// const ctx = canvas.getContext("2d");
+//
+// // 🟥 Define rectangles with position, size, current scale, target scale, and hover state
+// const rectangles = [
+//     { x: 100, y: 100, width: 100, height: 80, scale: 1, targetScale: 1, hovered: false },
+//     { x: 250, y: 150, width: 120, height: 90, scale: 1, targetScale: 1, hovered: false }
+// ];
+//
+// // 🖱 Track the mouse position relative to the canvas
+// let mouse = { x: 0, y: 0 };
+//
+// // 🕹 Flag to control whether an animation is currently running
+// let animationRunning = false;
+//
+// /**
+//  * 🔍 Helper to check if the mouse is currently over a given rectangle.
+//  * We take into account the current scale to detect hover accurately.
+//  */
+// function isMouseOver(rect) {
+//     const scaledW = rect.width * rect.scale;
+//     const scaledH = rect.height * rect.scale;
+//     const offsetX = (scaledW - rect.width) / 2;
+//     const offsetY = (scaledH - rect.height) / 2;
+//
+//     return (
+//         mouse.x >= rect.x - offsetX &&
+//         mouse.x <= rect.x + rect.width + offsetX &&
+//         mouse.y >= rect.y - offsetY &&
+//         mouse.y <= rect.y + rect.height + offsetY
+//     );
+// }
+//
+// /**
+//  * 🧠 Check whether any hover states have changed.
+//  * If so, update the target scale and trigger the animation loop.
+//  */
+// function updateHoverStates() {
+//     let stateChanged = false;
+//
+//     for (let rect of rectangles) {
+//         const isHovered = isMouseOver(rect);
+//
+//         if (rect.hovered !== isHovered) {
+//             rect.hovered = isHovered;
+//             rect.targetScale = isHovered ? 1.1 : 1.0;
+//             stateChanged = true;
+//         }
+//     }
+//
+//     // Start animation only if needed
+//     if (stateChanged && !animationRunning) {
+//         animationRunning = true;
+//         requestAnimationFrame(animate);
+//     }
+// }
+//
+// /**
+//  * 🧩 Animate the rectangles by easing their scale values toward the target.
+//  * If there's no more change needed, stop the loop to save performance.
+//  */
+// function animate() {
+//     let needsRedraw = false;
+//     let animating = false;
+//
+//     for (let rect of rectangles) {
+//         const diff = rect.targetScale - rect.scale;
+//
+//         if (Math.abs(diff) > 0.001) {
+//             rect.scale += diff * 0.1; // simple easing
+//             needsRedraw = true;
+//             animating = true;
+//         } else {
+//             // Snap to target to prevent jitter
+//             if (rect.scale !== rect.targetScale) {
+//                 rect.scale = rect.targetScale;
+//                 needsRedraw = true;
+//             }
+//         }
+//     }
+//
+//     // Redraw only if something actually changed
+//     if (needsRedraw) draw();
+//
+//     // Continue animating if still in motion
+//     if (animating) {
+//         requestAnimationFrame(animate);
+//     } else {
+//         animationRunning = false;
+//     }
+// }
+//
+// /**
+//  * 🖼 Redraw the entire canvas with the current rectangle states.
+//  * Takes into account the scaling and centers the scaled rectangles properly.
+//  */
+// function draw() {
+//     ctx.clearRect(0, 0, canvas.width, canvas.height);
+//
+//     for (let rect of rectangles) {
+//         const scaledW = rect.width * rect.scale;
+//         const scaledH = rect.height * rect.scale;
+//         const offsetX = (scaledW - rect.width) / 2;
+//         const offsetY = (scaledH - rect.height) / 2;
+//
+//         ctx.strokeRect(
+//             rect.x - offsetX,
+//             rect.y - offsetY,
+//             scaledW,
+//             scaledH
+//         );
+//     }
+// }
+//
+// /**
+//  * 🖱 Event listener for mouse movement.
+//  * Converts the browser coordinates to canvas coordinates and updates hover state.
+//  */
+// canvas.addEventListener("mousemove", (e) => {
+//     const rect = canvas.getBoundingClientRect();
+//     mouse.x = e.clientX - rect.left;
+//     mouse.y = e.clientY - rect.top;
+//
+//     updateHoverStates();
+// });
+//
+// // 🟢 Initial render (only happens once at the start)
+// draw();
+// </script>

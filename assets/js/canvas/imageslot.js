@@ -67,7 +67,7 @@ export class ImageSlot {
      * @param {number} mouseY
      * @returns {boolean}
      */
-    hadMouseInteraction(mouseX, mouseY) {
+    hasMouseOver(mouseX, mouseY) {
         return mouseX >=this.#xPx
             && mouseX <= this.#xPx + this.#widthPx
             && mouseY >=this.#yPx
