@@ -42,9 +42,6 @@ export class ImageSlot {
     /** @type {number} */
     #currScale;
 
-    /** @type {number} */
-    #nextScale;
-
     /**
      * Creates an ImageSlot object.
      * @param {number} originX
@@ -65,11 +62,14 @@ export class ImageSlot {
         this.#image = image;
         this.#isHovered = false;
         this.#currScale = NORMAL_SCALE;
-        this.#nextScale = HOVERED_SCALE;
     }
 
     get isHovered() {
         return this.#isHovered;
+    }
+
+    set isHovered(newHoveredState) {
+        this.#isHovered = newHoveredState;
     }
 
     set image(newImage) {
@@ -80,20 +80,18 @@ export class ImageSlot {
      * @param {{needsRedraw: boolean, isInProgress: boolean}} params
      */
     calculateNextAnimationScale(params) {
-        const diff = this.#nextScale - this.#currScale;
+        const targetScale = this.#isHovered ? HOVERED_SCALE : NORMAL_SCALE;
+        const diff = targetScale - this.#currScale;
 
         if (Math.abs(diff) > 0.001) {
             this.#currScale += diff * 0.1;
             params.needsRedraw = true;
             params.isInProgress = true;
         }
-        else if (this.#currScale !== this.#nextScale) {
-            this.#currScale = this.#nextScale;
-            this.#nextScale = this.#nextScale === HOVERED_SCALE ? NORMAL_SCALE : HOVERED_SCALE;
+        else if (this.#currScale !== targetScale) {
+            this.#currScale = targetScale;
             params.needsRedraw = true;
         }
-
-        this.#scalePixels();
     }
 
     /**
@@ -116,9 +114,20 @@ export class ImageSlot {
      * @param {CanvasRenderingContext2D} ctx
      */
     draw(ctx) {
+        ctx.save();
+
+        const centerX = (this.#xPx + this.#widthPx) / 2.0;
+        const centerY = (this.#yPx + this.#heightPx) / 2.0;
+
+        ctx.translate(centerX, centerY);
+        ctx.scale(this.#currScale, this.#currScale);
+        ctx.translate(-centerX, -centerY);
+
         this.#drawFrame(ctx);
         if (this.#image)
             this.#drawImage(ctx);
+
+        ctx.restore();
     }
 
     /**
@@ -131,13 +140,6 @@ export class ImageSlot {
             && mouseX <= this.#xPx + this.#widthPx
             && mouseY >= this.#yPx
             && mouseY <= this.#yPx + this.#heightPx;
-    }
-
-    /**
-     *
-     */
-    toggleHoveredState() {
-        this.#isHovered = !this.#isHovered;
     }
 
     /**
@@ -175,15 +177,5 @@ export class ImageSlot {
 
         ctx.drawImage(this.#image, resX, resY, resWidth, resHeight,
             this.#xPx, this.#yPx, this.#widthPx, this.#heightPx);
-    }
-
-    /**
-     *
-     */
-    #scalePixels() {
-        this.#xPx *= this.#currScale;
-        this.#yPx *= this.#currScale;
-        this.#widthPx *= this.#currScale;
-        this.#heightPx *= this.#currScale;
     }
 }
