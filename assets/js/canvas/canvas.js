@@ -42,6 +42,10 @@ export class CollageCanvas {
         this.#spacing = Constants.DEFAULT_SPACING;
     }
 
+    get slots() {
+        return this.#slots;
+    }
+
     /**
      *
      */
@@ -79,6 +83,9 @@ export class CollageCanvas {
      * @param {boolean} needsRecalculation
      */
     drawLayout(theLayout, needsRecalculation) {
+        // FIXME: When we get here from a change of spacing, the images in the
+        //        slots are erased instead of resized with their respective slots.
+
         // The slots will be deleted in #generateSlotsFromLayout() if needed.
         this.clear(false);
 
@@ -101,7 +108,7 @@ export class CollageCanvas {
 
     /**
      * @param {string} property
-     * @param {number|string} newValue
+     * @param {number | string} newValue
      */
     update(property, newValue) {
         let spacingChanged = false;
@@ -152,21 +159,62 @@ export class CollageCanvas {
             const clickedX = event.clientX - rect.left;
             const clickedY = event.clientY - rect.top;
 
-            const imgSlotClicked = this.#slots.find(s =>
+            const clickedImgSlot = this.#slots.find(s =>
                 s.hasMouseOver(clickedX, clickedY)
             );
 
-            if (imgSlotClicked) {
+            if (clickedImgSlot) {
                 uploadButton.onchange = makeUploadOnChangeHandler(
-                    imgSlotClicked,
+                    clickedImgSlot,
                     this.#canvasCtx
                 );
                 uploadButton.click();
             }
         });
 
+        let isSlotAnimationRunning = false;
+
+        /**
+         * @param {CollageCanvas} theCanvas
+         */
+        function animateSlots(theCanvas) {
+            const animationParams = {
+                needsRedraw: false,
+                isInProgress: false
+            };
+
+            for (const s of theCanvas.slots)
+                s.calculateNextAnimationScale(animationParams);
+
+            if (animationParams.needsRedraw)
+                theCanvas.drawLayout(null, false);
+
+            if (animationParams.isInProgress) {
+                requestAnimationFrame(() => animateSlots(theCanvas));
+            }
+            else {
+                isSlotAnimationRunning = false;
+            }
+        }
+
         this.#canvasObj.addEventListener('mousemove', (event) => {
-            console.log(`Slots animations coming soon!`);
+            const rect = this.#canvasObj.getBoundingClientRect();
+            const cursorX = event.clientX - rect.left;
+            const cursorY = event.clientY - rect.top;
+
+            let didStateChange = false;
+
+            for (const slot of this.#slots) {
+                if (slot.isHovered !== slot.hasMouseOver(cursorX, cursorY)) {
+                    didStateChange = true;
+                    slot.toggleHoveredState();
+                }
+            }
+
+            if (didStateChange && !isSlotAnimationRunning) {
+                isSlotAnimationRunning = true;
+                requestAnimationFrame(() => animateSlots(this));
+            }
         });
     }
 
@@ -219,6 +267,7 @@ export class CollageCanvas {
         else {
             // FUTURE FEATURE!
             // Custom Layout!
+            console.log('Future Feature! Custom Layouts!');
         }
     }
 }
