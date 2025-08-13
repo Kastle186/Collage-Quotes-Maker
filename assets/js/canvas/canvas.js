@@ -33,6 +33,9 @@ export class CollageCanvas {
     /** @type {number} */
     #spacing;
 
+    /** @type {boolean} */
+    #isSlotAnimating;
+
     constructor() {
         this.#canvasObj = null;
         this.#canvasCtx = null;
@@ -40,6 +43,7 @@ export class CollageCanvas {
         this.#layout = null;
         this.#slots = [];
         this.#spacing = Constants.DEFAULT_SPACING;
+        this.#isSlotAnimating = false;
     }
 
     get slots() {
@@ -47,7 +51,7 @@ export class CollageCanvas {
     }
 
     /**
-     *
+     * Initializes canvas class instance and the HTML canvas object's event listeners.
      */
     initialize() {
         this.#canvasObj = document.getElementById('the-canvas');
@@ -68,6 +72,8 @@ export class CollageCanvas {
     }
 
     /**
+     * Deletes all slots and leaves a clean canvas with just the current
+     * background color.
      * @param {boolean} deleteSlots
      */
     clear(deleteSlots) {
@@ -79,6 +85,7 @@ export class CollageCanvas {
     }
 
     /**
+     * Render the slots according to the selected layout.
      * @param {Layout | null} theLayout
      * @param {boolean} needsRecalculation
      */
@@ -107,6 +114,7 @@ export class CollageCanvas {
     }
 
     /**
+     * Updates the value of the specified property of the canvas.
      * @param {string} property
      * @param {number | string} newValue
      */
@@ -121,10 +129,7 @@ export class CollageCanvas {
                     `--canvas-${property}`,
                     `${newValue}px`);
 
-                if (property === 'width')
-                    this.#canvasObj.width = newValue;
-                if (property === 'height')
-                    this.#canvasObj.height = newValue;
+                this.#canvasObj[property] = newValue;
                 break;
 
             case 'spacing':
@@ -137,10 +142,11 @@ export class CollageCanvas {
                 break;
 
             case 'frame-color':
+                console.log('Frame color customization coming soon!');
                 break;
 
             default:
-                console.log(`Unknown canvas property value received: ${property}`);
+                console.warn(`Unknown canvas property value received: ${property}`);
                 return ;
         }
 
@@ -150,6 +156,31 @@ export class CollageCanvas {
 
     /**
      *
+     */
+    #animateSlots() {
+        const animationParams = {
+            needsRedraw: false,
+            isInProgress: false
+        };
+
+        for (const slot of this.#slots)
+            slot.calculateNextAnimationScale(animationParams);
+
+        if (animationParams.needsRedraw)
+            this.drawLayout(null, false);
+
+        if (animationParams.isInProgress) {
+            requestAnimationFrame(() => this.#animateSlots());
+        }
+        else {
+            this.#isSlotAnimating = false;
+        }
+    }
+
+    /**
+     * Initializes the listeners in charge of the slots' functions:
+     * - Zoom in/out animation when the cursor hovers/leaves the area.
+     * - Set the image uploaded by the user when clicked.
      */
     #createSlotsListeners() {
         const uploadButton = document.getElementById('upload-layer');
@@ -172,31 +203,6 @@ export class CollageCanvas {
             }
         });
 
-        let isSlotAnimationRunning = false;
-
-        /**
-         * @param {CollageCanvas} theCanvas
-         */
-        function animateSlots(theCanvas) {
-            const animationParams = {
-                needsRedraw: false,
-                isInProgress: false
-            };
-
-            for (const s of theCanvas.slots)
-                s.calculateNextAnimationScale(animationParams);
-
-            if (animationParams.needsRedraw)
-                theCanvas.drawLayout(null, false);
-
-            if (animationParams.isInProgress) {
-                requestAnimationFrame(() => animateSlots(theCanvas));
-            }
-            else {
-                isSlotAnimationRunning = false;
-            }
-        }
-
         this.#canvasObj.addEventListener('mousemove', (event) => {
             const rect = this.#canvasObj.getBoundingClientRect();
             const cursorX = event.clientX - rect.left;
@@ -213,15 +219,16 @@ export class CollageCanvas {
                 }
             }
 
-            if (didStateChange && !isSlotAnimationRunning) {
-                isSlotAnimationRunning = true;
-                requestAnimationFrame(() => animateSlots(this));
+            if (didStateChange && !this.#isSlotAnimating) {
+                this.#isSlotAnimating = true;
+                requestAnimationFrame(() => this.#animateSlots());
             }
         });
     }
 
     /**
-     *
+     * Renders a rectangle the size of the canvas with the currently set
+     * background color.
      */
     #fillBackground() {
         this.#canvasCtx.fillStyle = this.#bgColor;
@@ -229,47 +236,62 @@ export class CollageCanvas {
     }
 
     /**
-     *
+     * Calculate the dimensions for each slot of the given layout, and render
+     * them into the canvas.
      */
     #generateSlotsFromLayout() {
         this.#slots = [];
 
         if (this.#layout.customSlots == null || this.#layout.customSlots.length === 0) {
-            // Uniform Layout!
-            const numSlotsX = this.#layout.dimX;
-            const numSlotsY = this.#layout.dimY;
-
-            // Generate the pattern from the dimensions' information (percentage).
-            // The formula is the following:
-            // slotDimSize = (canvas / numSlots) - spacing - (spacing / numSlots)
-
-            const slotWidthPct =
-                (1.0 / numSlotsX) - this.#spacing - (this.#spacing / numSlotsX);
-            const slotHeightPct =
-                (1.0 / numSlotsY) - this.#spacing - (this.#spacing / numSlotsY);
-
-            for (let i = 0; i < numSlotsX; i++) {
-                let xStartPct = this.#spacing + ((this.#spacing + slotWidthPct) * i);
-                let yStartPct = 0;
-
-                for (let j = 0; j < numSlotsY; j++) {
-                    yStartPct += this.#spacing;
-
-                    const slotObj = new ImageSlot(
-                        xStartPct,
-                        yStartPct,
-                        slotWidthPct,
-                        slotHeightPct);
-
-                    this.#slots.push(slotObj);
-                    yStartPct += slotHeightPct;
-                }
-            }
+            this.#generateUniformSlots();
         }
         else {
-            // FUTURE FEATURE!
-            // Custom Layout!
-            console.log('Future Feature! Custom Layouts!');
+            this.#generateCustomSlots();
+        }
+    }
+
+    /**
+     *
+     */
+    #generateCustomSlots() {
+        // FUTURE FEATURE!
+        // Custom Layout!
+        console.log('Future Feature! Custom Layouts!');
+    }
+
+    /**
+     *
+     */
+    #generateUniformSlots() {
+        // Uniform Layout!
+        const numSlotsX = this.#layout.dimX;
+        const numSlotsY = this.#layout.dimY;
+
+        // Generate the pattern from the dimensions' information (percentage).
+        // The formula is the following:
+        // slotDimSize = (canvas / numSlots) - spacing - (spacing / numSlots)
+
+        const slotWidthPct =
+            (1.0 / numSlotsX) - this.#spacing - (this.#spacing / numSlotsX);
+        const slotHeightPct =
+            (1.0 / numSlotsY) - this.#spacing - (this.#spacing / numSlotsY);
+
+        for (let i = 0; i < numSlotsX; i++) {
+            let xStartPct = this.#spacing + ((this.#spacing + slotWidthPct) * i);
+            let yStartPct = 0;
+
+            for (let j = 0; j < numSlotsY; j++) {
+                yStartPct += this.#spacing;
+
+                const slotObj = new ImageSlot(
+                    xStartPct,
+                    yStartPct,
+                    slotWidthPct,
+                    slotHeightPct);
+
+                this.#slots.push(slotObj);
+                yStartPct += slotHeightPct;
+            }
         }
     }
 }

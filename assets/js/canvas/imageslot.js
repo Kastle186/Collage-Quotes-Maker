@@ -43,7 +43,6 @@ export class ImageSlot {
     #currScale;
 
     /**
-     * Creates an ImageSlot object.
      * @param {number} originX
      * @param {number} originY
      * @param {number} width
@@ -77,6 +76,7 @@ export class ImageSlot {
     }
 
     /**
+     * Smoothly interpolates scale based on hover state.
      * @param {{needsRedraw: boolean, isInProgress: boolean}} params
      */
     calculateNextAnimationScale(params) {
@@ -111,6 +111,7 @@ export class ImageSlot {
     }
 
     /**
+     * Renders the image slot, including image and frame.
      * @param {CanvasRenderingContext2D} ctx
      */
     draw(ctx) {
@@ -131,6 +132,7 @@ export class ImageSlot {
     }
 
     /**
+     * Checks if the slot got clicked or hovered by the mouse.
      * @param {number} mouseX
      * @param {number} mouseY
      * @returns {boolean}
@@ -143,6 +145,7 @@ export class ImageSlot {
     }
 
     /**
+     * Renders the slot's frame.
      * @param {CanvasRenderingContext2D} ctx
      */
     #drawFrame(ctx) {
@@ -151,31 +154,34 @@ export class ImageSlot {
     }
 
     /**
+     * Draws the image scaled and cropped to fit the slot.
      * @param {CanvasRenderingContext2D} ctx
      */
     #drawImage(ctx) {
         const imgAspectRatio = this.#image.width / this.#image.height;
         const slotAspectRatio = this.#widthPx / this.#heightPx;
 
-        let resWidth, resHeight, resX, resY;
+        let resX = 0;
+        let resY = 0;
+        let resWidth = this.#image.width;
+        let resHeight = this.#image.height;
 
         // Crop the center section we will be zooming in of the image, to fit
         // the slot's aspect ratio, without deforming it.
 
         if (imgAspectRatio > slotAspectRatio) {
             resWidth = this.#image.height * slotAspectRatio;
-            resHeight = this.#image.height;
-            resX = (this.#image.width - resWidth) / 2;
-            resY = 0;
+            resX = (this.#image.width - resWidth) / 2.0;
         }
         else {
-            resWidth = this.#image.width;
             resHeight = this.#image.width / slotAspectRatio;
-            resX = 0;
-            resY = (this.#image.height - resHeight) / 2;
+            resY = (this.#image.height - resHeight) / 2.0;
         }
 
-        ctx.drawImage(this.#image, resX, resY, resWidth, resHeight,
-            this.#xPx, this.#yPx, this.#widthPx, this.#heightPx);
+        ctx.drawImage(
+            this.#image,
+            resX, resY, resWidth, resHeight,
+            this.#xPx, this.#yPx, this.#widthPx, this.#heightPx
+        );
     }
 }
