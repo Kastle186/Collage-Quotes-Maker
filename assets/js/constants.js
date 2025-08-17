@@ -12,3 +12,4 @@ export const DEFAULT_WIDTH = 1280;
 
 export const NORMAL_SCALE = 1.0;
 export const HOVERED_SCALE = 1.1;
+export const SELECTION_GLOW_COLOR = '#FFE34C';

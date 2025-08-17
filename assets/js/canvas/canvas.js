@@ -36,6 +36,9 @@ export class CollageCanvas {
     /** @type {boolean} */
     #isSlotAnimating;
 
+    /** @type {ImageSlot} */
+    #selectedSlot;
+
     constructor() {
         this.#canvasObj = null;
         this.#canvasCtx = null;
@@ -44,10 +47,7 @@ export class CollageCanvas {
         this.#slots = [];
         this.#spacing = Constants.DEFAULT_SPACING;
         this.#isSlotAnimating = false;
-    }
-
-    get slots() {
-        return this.#slots;
+        this.#selectedSlot = null;
     }
 
     /**
@@ -195,11 +195,30 @@ export class CollageCanvas {
             );
 
             if (clickedImgSlot) {
-                uploadButton.onchange = makeUploadOnChangeHandler(
-                    clickedImgSlot,
-                    this.#canvasCtx
-                );
-                uploadButton.click();
+                if (clickedImgSlot.isSelected) {
+                    uploadButton.onchange = makeUploadOnChangeHandler(
+                        clickedImgSlot,
+                        this.#canvasCtx
+                    );
+                    uploadButton.click();
+                }
+                else {
+                    clickedImgSlot.isSelected = true;
+
+                    // ENHANCEME: Check if we can merge this #selectedSlot !== null
+                    //            condition with the one in the else if afterwards.
+                    if (this.#selectedSlot !== null) {
+                        this.#selectedSlot.isSelected = false;
+                    }
+
+                    this.#selectedSlot = clickedImgSlot;
+                    this.drawLayout(null, false);
+                }
+            }
+            else if (this.#selectedSlot !== null) {
+                this.#selectedSlot.isSelected = false;
+                this.#selectedSlot = null;
+                this.drawLayout(null, false);
             }
         });
 
@@ -295,3 +314,58 @@ export class CollageCanvas {
         }
     }
 }
+
+// let selectedRect = null;
+//
+// canvas.addEventListener("click", function(e) {
+//     const { offsetX, offsetY } = e;
+//     let clickedSomething = false;
+//
+//     for (const rect of rectangles) {
+//         if (isInsideRect(offsetX, offsetY, rect)) {
+//             if (selectedRect === rect) {
+//                 // Deselect if already selected
+//                 selectedRect = null;
+//             } else {
+//                 selectedRect = rect;
+//             }
+//             clickedSomething = true;
+//             drawAll();
+//             break;
+//         }
+//     }
+//
+//     // Optional: deselect if clicked outside any rectangle
+//     if (!clickedSomething) {
+//         selectedRect = null;
+//         drawAll();
+//     }
+// });
+
+// function drawAll() {
+//     ctx.clearRect(0, 0, canvas.width, canvas.height);
+//
+//     for (const rect of rectangles) {
+//         // Set glow for selected
+//         if (rect === selectedRect) {
+//             ctx.shadowBlur = 10;
+//             ctx.shadowColor = selectedBorderColor;
+//         } else {
+//             ctx.shadowBlur = 0;
+//             ctx.shadowColor = "transparent";
+//         }
+//
+//         // Draw fill
+//         ctx.fillStyle = rect.fill || "#ddd";
+//         ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+//
+//         // Draw border
+//         ctx.strokeStyle = rect === selectedRect ? selectedBorderColor : "#000";
+//         ctx.lineWidth = rect === selectedRect ? 3 : 1;
+//         ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+//     }
+//
+//     // Always reset
+//     ctx.shadowBlur = 0;
+//     ctx.shadowColor = "transparent";
+// }

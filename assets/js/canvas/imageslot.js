@@ -6,7 +6,7 @@
 
 'use strict';
 
-import { NORMAL_SCALE, HOVERED_SCALE } from "../constants.js";
+import { NORMAL_SCALE, HOVERED_SCALE, SELECTION_GLOW_COLOR } from "../constants.js";
 
 export class ImageSlot {
     /** @type {number} */
@@ -39,6 +39,9 @@ export class ImageSlot {
     /** @type {boolean} */
     #isHovered;
 
+    /** @type {boolean} */
+    #isSelected;
+
     /** @type {number} */
     #currScale;
 
@@ -60,6 +63,7 @@ export class ImageSlot {
 
         this.#image = image;
         this.#isHovered = false;
+        this.#isSelected = false;
         this.#currScale = NORMAL_SCALE;
     }
 
@@ -67,8 +71,16 @@ export class ImageSlot {
         return this.#isHovered;
     }
 
+    get isSelected() {
+        return this.#isSelected;
+    }
+
     set isHovered(newHoveredState) {
         this.#isHovered = newHoveredState;
+    }
+
+    set isSelected(newSelectedState) {
+        this.#isSelected = newSelectedState;
     }
 
     set image(newImage) {
@@ -115,6 +127,8 @@ export class ImageSlot {
      * @param {CanvasRenderingContext2D} ctx
      */
     draw(ctx) {
+        // TODO: Check if it would be possible to only do these calculations when
+        //       we're sure the slot is in an animation state.
         ctx.save();
 
         const centerX = (this.#xPx + this.#widthPx) / 2.0;
@@ -149,8 +163,15 @@ export class ImageSlot {
      * @param {CanvasRenderingContext2D} ctx
      */
     #drawFrame(ctx) {
-        ctx.strokeStyle = 'blue';
+        // TODO: Implement each slot having their own frame color.
+        ctx.save();
+
+        ctx.strokeStyle = this.#isSelected ? SELECTION_GLOW_COLOR : 'blue';
+        ctx.shadowBlur = this.#isSelected ? 10 : 0;
+        ctx.shadowColor = this.#isSelected ? SELECTION_GLOW_COLOR : 'transparent';
+
         ctx.strokeRect(this.#xPx, this.#yPx, this.#widthPx, this.#heightPx);
+        ctx.restore();
     }
 
     /**
