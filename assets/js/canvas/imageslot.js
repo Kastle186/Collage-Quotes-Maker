@@ -7,6 +7,7 @@
 'use strict';
 
 import {
+    DEFAULT_FRAME_COLOR,
     NORMAL_SCALE,
     HOVERED_SCALE,
     SELECTION_GLOW_COLOR,
@@ -37,6 +38,9 @@ export class ImageSlot {
     /** @type {number} */
     #heightPx;
 
+    /** @type {string} */
+    #frameColor;
+
     /** @type {CanvasImageSource} */
     #image;
 
@@ -54,9 +58,10 @@ export class ImageSlot {
      * @param {number} originY
      * @param {number} width
      * @param {number} height
-     * @param {CanvasImageSource} image
+     * @param {string | null} frame
+     * @param {CanvasImageSource | null} image
      */
-    constructor(originX, originY, width, height, image = null) {
+    constructor(originX, originY, width, height, frame = null, image = null) {
         // We're keeping the percents public because a future feature will be
         // to allow the user to resize slots individually. In that case, we will
         // need to set these properties from elsewhere.
@@ -65,6 +70,7 @@ export class ImageSlot {
         this.#widthPct = width;
         this.#heightPct = height;
 
+        this.#frameColor = frame || DEFAULT_FRAME_COLOR;
         this.#image = image;
         this.#isHovered = false;
         this.#isSelected = false;
@@ -129,8 +135,9 @@ export class ImageSlot {
     /**
      * Renders the image slot, including image and frame.
      * @param {CanvasRenderingContext2D} ctx
+     * @param {boolean} isRedraw
      */
-    draw(ctx) {
+    draw(ctx, isRedraw) {
         // TODO: Check if it would be possible to only do these calculations when
         //       we're sure the slot is in an animation state.
         ctx.save();
@@ -141,6 +148,9 @@ export class ImageSlot {
         ctx.translate(centerX, centerY);
         ctx.scale(this.#currScale, this.#currScale);
         ctx.translate(-centerX, -centerY);
+
+        if (isRedraw)
+            this.#reset(ctx);
 
         this.#drawFrame(ctx);
         if (this.#image)
@@ -208,5 +218,13 @@ export class ImageSlot {
             resX, resY, resWidth, resHeight,
             this.#xPx, this.#yPx, this.#widthPx, this.#heightPx
         );
+    }
+
+    /**
+     * @param {CanvasRenderingContext2D} ctx
+     */
+    #reset(ctx) {
+        ctx.clearRect(this.#xPx, this.#yPx, this.#widthPx, this.#heightPx);
+        ctx.fillRect(this.#xPx, this.#yPx, this.#widthPx, this.#heightPx);
     }
 }

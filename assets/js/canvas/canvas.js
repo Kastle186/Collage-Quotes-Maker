@@ -8,7 +8,6 @@
 
 import {
     DEFAULT_BG_COLOR,
-    DEFAULT_FRAME_COLOR,
     DEFAULT_HEIGHT,
     DEFAULT_SPACING,
     DEFAULT_WIDTH,
@@ -31,9 +30,6 @@ export class CollageCanvas {
     /** @type {string} */
     #bgColor;
 
-    /** @type {string} */
-    #frameColor;
-
     /** @type {Layout} */
     #layout;
 
@@ -53,7 +49,6 @@ export class CollageCanvas {
         this.#canvasObj = null;
         this.#canvasCtx = null;
         this.#bgColor = DEFAULT_BG_COLOR;
-        this.#frameColor = DEFAULT_FRAME_COLOR;
         this.#layout = null;
         this.#slots = [];
         this.#spacing = DEFAULT_SPACING;
@@ -109,18 +104,20 @@ export class CollageCanvas {
 
         // If we arrived here from a new layout, then update the CollageCanvas
         // object with the new layout's parameters.
+
         if (theLayout != null)
             this.#layout = theLayout;
 
         // If we arrived here from selecting a new layout or changed the slots'
         // spacing, then we have to do all the calculations. But if we got here
         // solely from a canvas resize, then we only have to redraw the layout.
+
         if (needsRecalculation)
             this.#generateSlotsFromLayout();
 
         for (const slot of this.#slots) {
             slot.calculatePixels(this.#canvasObj.width, this.#canvasObj.height);
-            slot.draw(this.#canvasCtx);
+            slot.draw(this.#canvasCtx, false);
         }
     }
 
@@ -153,7 +150,8 @@ export class CollageCanvas {
                 break;
 
             case 'frame-color':
-                console.log('Frame color customization coming soon!');
+                // IMPLEMENTME: Change the color of the frame of the currently
+                //              selected rectangle (if any), and unselect it.
                 break;
 
             default:
@@ -220,16 +218,18 @@ export class CollageCanvas {
                     //            condition with the one in the else if afterwards.
                     if (this.#selectedSlot !== null) {
                         this.#selectedSlot.isSelected = false;
+                        this.#selectedSlot.draw(this.#canvasCtx, true)
                     }
 
                     this.#selectedSlot = clickedImgSlot;
-                    this.drawLayout(null, false);
+                    this.#selectedSlot.draw(this.#canvasCtx, true)
                 }
             }
             else if (this.#selectedSlot !== null) {
                 this.#selectedSlot.isSelected = false;
+                this.#selectedSlot.draw(this.#canvasCtx, true);
                 this.#selectedSlot = null;
-                this.drawLayout(null, false);
+                // this.drawLayout(null, false);
             }
         });
 
@@ -239,6 +239,12 @@ export class CollageCanvas {
             const cursorY = event.clientY - rect.top;
 
             let didStateChange = false;
+
+            // We check for all slots here, as opposed to just for the first one
+            // in the click event, since more than one slot might be in animation
+            // state at the same time. For example, the mouse slides quickly from
+            // one to another. There will be a fraction of a second where one is
+            // zooming out and the other is zooming in.
 
             for (const slot of this.#slots) {
                 const isSlotNowHovered = slot.hasMouseOver(cursorX, cursorY);

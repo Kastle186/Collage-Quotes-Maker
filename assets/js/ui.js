@@ -10,7 +10,7 @@ import {
     DEFAULT_HEIGHT,
     DEFAULT_SPACING,
     DEFAULT_WIDTH,
-} from './constants';
+} from './constants.js';
 
 import { CollageCanvas } from './canvas/canvas.js';
 import { Layout } from './canvas/layout.js';
@@ -85,6 +85,7 @@ function initCanvasControls(theCanvas) {
 
     const clearButton = document.getElementById('clear-btn');
     const bgColorPicker = document.getElementById('bg-color-picker');
+    const frameColorPicker = document.getElementById('frame-color-picker');
 
     let rafId;
 
@@ -107,6 +108,10 @@ function initCanvasControls(theCanvas) {
 
     bgColorPicker.addEventListener('change', (event) => {
         theCanvas.update('bg-color', event.target.value);
+    });
+
+    frameColorPicker.addEventListener('change', (event) => {
+        theCanvas.update('frame-color', event.target.value);
     });
 }
 

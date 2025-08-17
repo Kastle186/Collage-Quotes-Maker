@@ -21,7 +21,7 @@ export function makeUploadOnChangeHandler(imgSlot, canvasCtx) {
         const img = new Image();
         img.onload = function () {
             imgSlot.image = img;
-            imgSlot.draw(canvasCtx);
+            imgSlot.draw(canvasCtx, true);
         };
         img.src = URL.createObjectURL(imgFile);
     };
