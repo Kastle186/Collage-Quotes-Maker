@@ -6,7 +6,11 @@
 
 'use strict';
 
-import { NORMAL_SCALE, HOVERED_SCALE, SELECTION_GLOW_COLOR } from "../constants.js";
+import {
+    NORMAL_SCALE,
+    HOVERED_SCALE,
+    SELECTION_GLOW_COLOR,
+} from '../constants.js';
 
 export class ImageSlot {
     /** @type {number} */

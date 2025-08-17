@@ -6,7 +6,12 @@
 
 'use strict';
 
-import * as Constants from './constants.js';
+import {
+    DEFAULT_HEIGHT,
+    DEFAULT_SPACING,
+    DEFAULT_WIDTH,
+} from './constants';
+
 import { CollageCanvas } from './canvas/canvas.js';
 import { Layout } from './canvas/layout.js';
 
@@ -61,19 +66,19 @@ function initCanvasControls(theCanvas) {
     const dimensionSettings = {
         'width-input': {
             propertyName: 'width',
-            defaultValue: Constants.DEFAULT_WIDTH,
+            defaultValue: DEFAULT_WIDTH,
             parse: value => parseInt(value, 10)
         },
 
         'height-input': {
             propertyName: 'height',
-            defaultValue: Constants.DEFAULT_HEIGHT,
+            defaultValue: DEFAULT_HEIGHT,
             parse: value => parseInt(value, 10)
         },
 
         'spacing-input': {
             propertyName: 'spacing',
-            defaultValue: Constants.DEFAULT_SPACING,
+            defaultValue: DEFAULT_SPACING,
             parse: value => parseInt(value, 10) / 100.0
         }
     };

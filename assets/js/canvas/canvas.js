@@ -6,9 +6,16 @@
 
 'use strict';
 
-import * as Constants from '../constants.js';
-import { makeUploadOnChangeHandler } from "../utils.js";
-import { ImageSlot } from "./imageslot.js";
+import {
+    DEFAULT_BG_COLOR,
+    DEFAULT_FRAME_COLOR,
+    DEFAULT_HEIGHT,
+    DEFAULT_SPACING,
+    DEFAULT_WIDTH,
+} from '../constants.js'
+
+import { makeUploadOnChangeHandler } from '../utils.js';
+import { ImageSlot } from './imageslot.js';
 
 /**
  * @typedef {import('./layout.js').Layout} Layout
@@ -23,6 +30,9 @@ export class CollageCanvas {
 
     /** @type {string} */
     #bgColor;
+
+    /** @type {string} */
+    #frameColor;
 
     /** @type {Layout} */
     #layout;
@@ -42,10 +52,11 @@ export class CollageCanvas {
     constructor() {
         this.#canvasObj = null;
         this.#canvasCtx = null;
-        this.#bgColor = Constants.DEFAULT_BG_COLOR;
+        this.#bgColor = DEFAULT_BG_COLOR;
+        this.#frameColor = DEFAULT_FRAME_COLOR;
         this.#layout = null;
         this.#slots = [];
-        this.#spacing = Constants.DEFAULT_SPACING;
+        this.#spacing = DEFAULT_SPACING;
         this.#isSlotAnimating = false;
         this.#selectedSlot = null;
     }
@@ -55,16 +66,16 @@ export class CollageCanvas {
      */
     initialize() {
         this.#canvasObj = document.getElementById('the-canvas');
-        this.#canvasObj.width = Constants.DEFAULT_WIDTH;
-        this.#canvasObj.height = Constants.DEFAULT_HEIGHT;
+        this.#canvasObj.width = DEFAULT_WIDTH;
+        this.#canvasObj.height = DEFAULT_HEIGHT;
 
         document.documentElement.style.setProperty(
             '--canvas-width',
-            `${Constants.DEFAULT_WIDTH}px`);
+            `${DEFAULT_WIDTH}px`);
 
         document.documentElement.style.setProperty(
             '--canvas-height',
-            `${Constants.DEFAULT_HEIGHT}px`);
+            `${DEFAULT_HEIGHT}px`);
 
         this.#canvasCtx = this.#canvasObj.getContext('2d');
         this.#fillBackground();
@@ -314,58 +325,3 @@ export class CollageCanvas {
         }
     }
 }
-
-// let selectedRect = null;
-//
-// canvas.addEventListener("click", function(e) {
-//     const { offsetX, offsetY } = e;
-//     let clickedSomething = false;
-//
-//     for (const rect of rectangles) {
-//         if (isInsideRect(offsetX, offsetY, rect)) {
-//             if (selectedRect === rect) {
-//                 // Deselect if already selected
-//                 selectedRect = null;
-//             } else {
-//                 selectedRect = rect;
-//             }
-//             clickedSomething = true;
-//             drawAll();
-//             break;
-//         }
-//     }
-//
-//     // Optional: deselect if clicked outside any rectangle
-//     if (!clickedSomething) {
-//         selectedRect = null;
-//         drawAll();
-//     }
-// });
-
-// function drawAll() {
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-//
-//     for (const rect of rectangles) {
-//         // Set glow for selected
-//         if (rect === selectedRect) {
-//             ctx.shadowBlur = 10;
-//             ctx.shadowColor = selectedBorderColor;
-//         } else {
-//             ctx.shadowBlur = 0;
-//             ctx.shadowColor = "transparent";
-//         }
-//
-//         // Draw fill
-//         ctx.fillStyle = rect.fill || "#ddd";
-//         ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-//
-//         // Draw border
-//         ctx.strokeStyle = rect === selectedRect ? selectedBorderColor : "#000";
-//         ctx.lineWidth = rect === selectedRect ? 3 : 1;
-//         ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
-//     }
-//
-//     // Always reset
-//     ctx.shadowBlur = 0;
-//     ctx.shadowColor = "transparent";
-// }
