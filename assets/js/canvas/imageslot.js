@@ -173,6 +173,19 @@ export class ImageSlot {
     }
 
     /**
+     * @param {number} newXPct
+     * @param {number} newYPct
+     * @param {number} newWidthPct
+     * @param {number} newHeightPct
+     */
+    updatePercentParameters(newXPct, newYPct, newWidthPct, newHeightPct) {
+        this.#xPct = newXPct;
+        this.#yPct = newYPct;
+        this.#widthPct = newWidthPct;
+        this.#heightPct = newHeightPct;
+    }
+
+    /**
      * Renders the slot's frame.
      * @param {CanvasRenderingContext2D} ctx
      */

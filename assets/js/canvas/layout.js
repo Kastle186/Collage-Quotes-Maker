@@ -80,7 +80,7 @@ export class Layout {
             const key = event.target.dataset.layoutId;
 
             if (key)
-                theCanvas.drawLayout(this, true);
+                theCanvas.drawLayout(this, true, false);
         });
 
         wrapper.appendChild(thumbElem);

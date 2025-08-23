@@ -94,13 +94,14 @@ export class CollageCanvas {
      * Render the slots according to the selected layout.
      * @param {Layout | null} theLayout
      * @param {boolean} needsRecalculation
+     * @param {boolean} preserveSlots
      */
-    drawLayout(theLayout, needsRecalculation) {
+    drawLayout(theLayout, needsRecalculation, preserveSlots) {
         // FIXME: When we get here from a change of spacing, the images in the
         //        slots are erased instead of resized with their respective slots.
 
         // The slots will be deleted in #generateSlotsFromLayout() if needed.
-        this.clear(false);
+        this.clear(!preserveSlots);
 
         // If we arrived here from a new layout, then update the CollageCanvas
         // object with the new layout's parameters.
@@ -160,7 +161,7 @@ export class CollageCanvas {
         }
 
         if (this.#slots.length > 0)
-            this.drawLayout(null, spacingChanged);
+            this.drawLayout(null, spacingChanged, true);
     }
 
     /**
@@ -176,7 +177,7 @@ export class CollageCanvas {
             slot.calculateNextAnimationScale(animationParams);
 
         if (animationParams.needsRedraw)
-            this.drawLayout(null, false);
+            this.drawLayout(null, false, true);
 
         if (animationParams.isInProgress) {
             requestAnimationFrame(() => this.#animateSlots());
@@ -276,8 +277,6 @@ export class CollageCanvas {
      * them into the canvas.
      */
     #generateSlotsFromLayout() {
-        this.#slots = [];
-
         if (this.#layout.customSlots == null || this.#layout.customSlots.length === 0) {
             this.#generateUniformSlots();
         }
@@ -312,6 +311,8 @@ export class CollageCanvas {
         const slotHeightPct =
             (1.0 / numSlotsY) - this.#spacing - (this.#spacing / numSlotsY);
 
+        let count = 0;
+
         for (let i = 0; i < numSlotsX; i++) {
             let xStartPct = this.#spacing + ((this.#spacing + slotWidthPct) * i);
             let yStartPct = 0;
@@ -319,14 +320,31 @@ export class CollageCanvas {
             for (let j = 0; j < numSlotsY; j++) {
                 yStartPct += this.#spacing;
 
-                const slotObj = new ImageSlot(
-                    xStartPct,
-                    yStartPct,
-                    slotWidthPct,
-                    slotHeightPct);
+                // If there are already slots in the canvas, then we know we only
+                // need to update their parameters. Otherwise, it means we are
+                // working with a clear canvas and need to create the slots.
 
-                this.#slots.push(slotObj);
+                if (count < this.#slots.length) {
+                    this.#slots[count].updatePercentParameters(
+                        xStartPct,
+                        yStartPct,
+                        slotWidthPct,
+                        slotHeightPct
+                    );
+                }
+                else {
+                    const slotObj = new ImageSlot(
+                        xStartPct,
+                        yStartPct,
+                        slotWidthPct,
+                        slotHeightPct
+                    );
+
+                    this.#slots.push(slotObj);
+                }
+
                 yStartPct += slotHeightPct;
+                count++;
             }
         }
     }
