@@ -8,6 +8,7 @@
 
 import {
     DEFAULT_BG_COLOR,
+    DEFAULT_FRAME_COLOR,
     DEFAULT_HEIGHT,
     DEFAULT_SPACING,
     DEFAULT_WIDTH,
@@ -30,6 +31,9 @@ export class CollageCanvas {
     /** @type {string} */
     #bgColor;
 
+    /** @type {string} */
+    #frameColor;
+
     /** @type {Layout} */
     #layout;
 
@@ -49,6 +53,7 @@ export class CollageCanvas {
         this.#canvasObj = null;
         this.#canvasCtx = null;
         this.#bgColor = DEFAULT_BG_COLOR;
+        this.#frameColor = DEFAULT_FRAME_COLOR;
         this.#layout = null;
         this.#slots = [];
         this.#spacing = DEFAULT_SPACING;
@@ -97,9 +102,6 @@ export class CollageCanvas {
      * @param {boolean} preserveSlots
      */
     drawLayout(theLayout, needsRecalculation, preserveSlots) {
-        // FIXME: When we get here from a change of spacing, the images in the
-        //        slots are erased instead of resized with their respective slots.
-
         // The slots will be deleted in #generateSlotsFromLayout() if needed.
         this.clear(!preserveSlots);
 
@@ -129,6 +131,7 @@ export class CollageCanvas {
      */
     update(property, newValue) {
         let spacingChanged = false;
+        let frameColorChanged = false;
 
         switch (property) {
             case 'width':
@@ -151,8 +154,8 @@ export class CollageCanvas {
                 break;
 
             case 'frame-color':
-                // IMPLEMENTME: Change the color of the frame of the currently
-                //              selected rectangle (if any), and unselect it.
+                this.#frameColor = newValue;
+                frameColorChanged = true;
                 break;
 
             default:
@@ -161,7 +164,7 @@ export class CollageCanvas {
         }
 
         if (this.#slots.length > 0)
-            this.drawLayout(null, spacingChanged, true);
+            this.drawLayout(null, spacingChanged || frameColorChanged, true);
     }
 
     /**
@@ -325,11 +328,12 @@ export class CollageCanvas {
                 // working with a clear canvas and need to create the slots.
 
                 if (count < this.#slots.length) {
-                    this.#slots[count].updatePercentParameters(
+                    this.#slots[count].update(
                         xStartPct,
                         yStartPct,
                         slotWidthPct,
-                        slotHeightPct
+                        slotHeightPct,
+                        this.#frameColor
                     );
                 }
                 else {

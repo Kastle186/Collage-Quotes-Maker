@@ -177,12 +177,17 @@ export class ImageSlot {
      * @param {number} newYPct
      * @param {number} newWidthPct
      * @param {number} newHeightPct
+     * @param {string | null} newFrameColor
      */
-    updatePercentParameters(newXPct, newYPct, newWidthPct, newHeightPct) {
+    update(newXPct, newYPct, newWidthPct, newHeightPct, newFrameColor = null) {
         this.#xPct = newXPct;
         this.#yPct = newYPct;
         this.#widthPct = newWidthPct;
         this.#heightPct = newHeightPct;
+
+        if (newFrameColor !== null) {
+            this.#frameColor = newFrameColor;
+        }
     }
 
     /**
@@ -190,10 +195,9 @@ export class ImageSlot {
      * @param {CanvasRenderingContext2D} ctx
      */
     #drawFrame(ctx) {
-        // TODO: Implement each slot having their own frame color.
         ctx.save();
 
-        ctx.strokeStyle = this.#isSelected ? SELECTION_GLOW_COLOR : 'blue';
+        ctx.strokeStyle = this.#isSelected ? SELECTION_GLOW_COLOR : this.#frameColor;
         ctx.shadowBlur = this.#isSelected ? 10 : 0;
         ctx.shadowColor = this.#isSelected ? SELECTION_GLOW_COLOR : 'transparent';
 
