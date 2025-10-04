@@ -17,9 +17,6 @@ import {
 import { makeUploadOnChangeHandler } from '../utils.js';
 import { ImageSlot } from './imageslot.js';
 
-// FIXME: When changing layouts, the frame color is not retained, and is returned
-//        to the default blue.
-
 /**
  * @typedef {import('./layout.js').Layout} Layout
  */
@@ -319,7 +316,8 @@ export class CollageCanvas {
                         xStartPct,
                         yStartPct,
                         slotWidthPct,
-                        slotHeightPct
+                        slotHeightPct,
+                        this.#frameColor
                     );
 
                     this.#slots.push(slotObj);
