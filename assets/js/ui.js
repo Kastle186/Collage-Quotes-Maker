@@ -127,6 +127,18 @@ function initLayoutsGrid(theCanvas) {
             'imgPath': 'assets/images/2x2-Layout.webp',
             'dimX': 2,
             'dimY': 2
+        },
+
+        '3x1': {
+            'imgPath': 'assets/images/3x1-Layout.webp',
+            'dimX': 3,
+            'dimY': 1
+        },
+
+        '3x2': {
+            'imgPath': 'assets/images/3x2-Layout.webp',
+            'dimX': 3,
+            'dimY': 2
         }
     };
 
