@@ -47,9 +47,6 @@ export class ImageSlot {
     /** @type {boolean} */
     #isHovered;
 
-    /** @type {boolean} */
-    #isSelected;
-
     /** @type {number} */
     #currScale;
 
@@ -73,7 +70,6 @@ export class ImageSlot {
         this.#frameColor = frame || DEFAULT_FRAME_COLOR;
         this.#image = image;
         this.#isHovered = false;
-        this.#isSelected = false;
         this.#currScale = NORMAL_SCALE;
     }
 
@@ -81,16 +77,8 @@ export class ImageSlot {
         return this.#isHovered;
     }
 
-    get isSelected() {
-        return this.#isSelected;
-    }
-
     set isHovered(newHoveredState) {
         this.#isHovered = newHoveredState;
-    }
-
-    set isSelected(newSelectedState) {
-        this.#isSelected = newSelectedState;
     }
 
     set image(newImage) {
@@ -196,11 +184,7 @@ export class ImageSlot {
      */
     #drawFrame(ctx) {
         ctx.save();
-
-        ctx.strokeStyle = this.#isSelected ? SELECTION_GLOW_COLOR : this.#frameColor;
-        ctx.shadowBlur = this.#isSelected ? 10 : 0;
-        ctx.shadowColor = this.#isSelected ? SELECTION_GLOW_COLOR : 'transparent';
-
+        ctx.strokeStyle = this.#frameColor;
         ctx.strokeRect(this.#xPx, this.#yPx, this.#widthPx, this.#heightPx);
         ctx.restore();
     }

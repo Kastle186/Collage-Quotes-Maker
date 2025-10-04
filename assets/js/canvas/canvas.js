@@ -17,6 +17,9 @@ import {
 import { makeUploadOnChangeHandler } from '../utils.js';
 import { ImageSlot } from './imageslot.js';
 
+// FIXME: When changing layouts, the frame color is not retained, and is returned
+//        to the default blue.
+
 /**
  * @typedef {import('./layout.js').Layout} Layout
  */
@@ -46,9 +49,6 @@ export class CollageCanvas {
     /** @type {boolean} */
     #isSlotAnimating;
 
-    /** @type {ImageSlot} */
-    #selectedSlot;
-
     constructor() {
         this.#canvasObj = null;
         this.#canvasCtx = null;
@@ -58,7 +58,6 @@ export class CollageCanvas {
         this.#slots = [];
         this.#spacing = DEFAULT_SPACING;
         this.#isSlotAnimating = false;
-        this.#selectedSlot = null;
     }
 
     /**
@@ -208,32 +207,11 @@ export class CollageCanvas {
             );
 
             if (clickedImgSlot) {
-                if (clickedImgSlot.isSelected) {
-                    uploadButton.onchange = makeUploadOnChangeHandler(
-                        clickedImgSlot,
-                        this.#canvasCtx
-                    );
-                    uploadButton.click();
-                }
-                else {
-                    clickedImgSlot.isSelected = true;
-
-                    // ENHANCEME: Check if we can merge this #selectedSlot !== null
-                    //            condition with the one in the else if afterwards.
-                    if (this.#selectedSlot !== null) {
-                        this.#selectedSlot.isSelected = false;
-                        this.#selectedSlot.draw(this.#canvasCtx, true)
-                    }
-
-                    this.#selectedSlot = clickedImgSlot;
-                    this.#selectedSlot.draw(this.#canvasCtx, true)
-                }
-            }
-            else if (this.#selectedSlot !== null) {
-                this.#selectedSlot.isSelected = false;
-                this.#selectedSlot.draw(this.#canvasCtx, true);
-                this.#selectedSlot = null;
-                // this.drawLayout(null, false);
+                uploadButton.onchange = makeUploadOnChangeHandler(
+                    clickedImgSlot,
+                    this.#canvasCtx
+                );
+                uploadButton.click();
             }
         });
 
