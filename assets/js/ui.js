@@ -84,6 +84,7 @@ function initCanvasControls(theCanvas) {
     };
 
     const clearButton = document.getElementById('clear-btn');
+    const downloadButton = document.getElementById('download-btn');
     const bgColorPicker = document.getElementById('bg-color-picker');
     const frameColorPicker = document.getElementById('frame-color-picker');
 
@@ -104,6 +105,15 @@ function initCanvasControls(theCanvas) {
 
     clearButton.addEventListener('click', () => {
         theCanvas.clear(true);
+    });
+
+    downloadButton.addEventListener('click', () => {
+        const dlLink = document.createElement('a');
+        const canvasObj = document.getElementById('the-canvas');
+
+        dlLink.download = 'my-collage.png'
+        dlLink.href = canvasObj.toDataURL('image/png');
+        dlLink.click();
     });
 
     bgColorPicker.addEventListener('change', (event) => {
