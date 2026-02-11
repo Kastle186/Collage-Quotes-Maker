@@ -1,0 +1,74 @@
+* {
+    box-sizing: border-box;
+    font-family: system-ui, sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    height: 100%;
+}
+
+.sidebar {
+    padding: 16px;
+    border-right: 1px solid #ccc;
+    background: #fafafa;
+}
+
+.field {
+    margin-bottom: 12px;
+}
+
+.workspace {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e0e0e0;
+}
+
+.the-canvas {
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.the-grid {
+    display: grid;
+    width: 100%;
+    height: 100%;
+}
+
+.slot {
+    border: 1px dashed #aaa;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    background: #f9f9f9;
+}
+
+.slot::after {
+    content: "Click to add image";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 0.8rem;
+    pointer-events: none;
+}
+
+.slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.slot.has-image::after {
+    display: none;
+}
