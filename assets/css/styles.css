@@ -33,22 +33,69 @@ body {
 }
 
 .the-canvas {
-    background: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    --canvas-bg: #ffffff;
+
+    background: var(--canvas-bg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+
+    transition: background-color 0.3s ease;
 }
 
 .the-grid {
+    --gap: 2%;
+
     display: grid;
     width: 100%;
     height: 100%;
+
+    gap: var(--gap);
+    padding: var(--gap);
+    box-sizing: border-box;
+
+    transition:
+        gap 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        padding 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slotClickBounce {
+    /* Start the animation at 1.05 because that's the hover effect's zoom scale. */
+    0% { transform: scale(1.05); }
+    35% { transform: scale(0.94); }
+    65% { transform: scale(1.08); }
+    100% { transform: scale(1); }
 }
 
 .slot {
-    border: 1px dashed #aaa;
+    --radius: 12px;
+    --frame-color: #cccccc;
+
+    border: 2px solid var(--frame-color);
+    border-radius: var(--radius);
+
     cursor: pointer;
     position: relative;
     overflow: hidden;
     background: #f9f9f9;
+
+    transform-origin: center center;
+    will-change: transform;
+
+    transition:
+        transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        border-color 0.25s ease,
+        border-radius 0.25s ease;
+}
+
+.slot:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+}
+
+.slot.click-animate {
+    animation: slotClickBounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .slot::after {
