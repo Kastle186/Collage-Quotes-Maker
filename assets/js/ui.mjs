@@ -3,6 +3,10 @@
 import CollageCanvas from "./models/collagecanvas.mjs";
 import GridLayout from "./models/gridlayout.mjs";
 
+HTMLElement.prototype.setCustomCSSProperty = function(propName, propValue) {
+    this.style.setProperty(`--${propName}`, propValue);
+}
+
 const layouts = new Map();
 
 /**
@@ -47,18 +51,15 @@ function initLayouts() {
  */
 
 function initCanvasControls(theCanvas) {
-    const layoutPicker = document.querySelector('.layout-picker');
-
-    layoutPicker.addEventListener('click', (evt) => {
-        const layoutBtn = evt.target.closest('button');
-        if (!layoutBtn) {
-            return ;
-        }
-        theCanvas.updateLayout(layouts.get(layoutBtn.textContent));
-    });
-
     const widthControls = document.getElementById('width-input');
     const heightControls = document.getElementById('height-input');
+    const frameColorControls = document.getElementById('frame-color-picker');
+    const bgColorControls = document.getElementById('bg-color-picker');
+    const spacingControls = document.getElementById('spacing-slider');
+    const cornerRadiusControls = document.getElementById('corner-radius-slider');
+    const layoutPicker = document.querySelector('.layout-picker');
+
+    // Dimensions Controls
 
     widthControls.addEventListener('input', (evt) => {
         theCanvas.width = evt.target.value;
@@ -66,5 +67,46 @@ function initCanvasControls(theCanvas) {
 
     heightControls.addEventListener('input', (evt) => {
         theCanvas.height = evt.target.value;
+    });
+
+    // Colors Controls
+
+    frameColorControls.addEventListener('input', () => {
+        theCanvas.grid.setCustomCSSProperty(
+            'frame-color-global',
+            frameColorControls.value
+        );
+
+        document.querySelectorAll('.slot').forEach((slot) => {
+            slot.setCustomCSSProperty('frame-color', frameColorControls.value);
+        });
+    });
+
+    bgColorControls.addEventListener('input', () => {
+        theCanvas.canvas.setCustomCSSProperty('canvas-bg', bgColorControls.value);
+    });
+
+    // Spacing Controls
+
+    spacingControls.addEventListener('input', () => {
+        theCanvas.grid.setCustomCSSProperty('gap', `${spacingControls.value}%`);
+    })
+
+    // Corner Rounding Controls
+
+    cornerRadiusControls.addEventListener('input', () => {
+        document.querySelectorAll('.slot').forEach((slot) => {
+            slot.setCustomCSSProperty('radius', `${cornerRadiusControls.value}px`);
+        });
+    });
+
+    // Layout Picker
+
+    layoutPicker.addEventListener('click', (evt) => {
+        const layoutBtn = evt.target.closest('button');
+        if (!layoutBtn) {
+            return ;
+        }
+        theCanvas.updateLayout(layouts.get(layoutBtn.textContent));
     });
 }

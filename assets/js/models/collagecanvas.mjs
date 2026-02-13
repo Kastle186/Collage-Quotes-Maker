@@ -47,11 +47,13 @@ class CollageCanvas {
         this.#configureGridListeners();
     }
 
-    // get selectedSlot() {
-    //     return this.#selectedSlotIndex === -1
-    //         ? null
-    //         : this.#slots[this.#selectedSlotIndex];
-    // }
+    get canvas() {
+        return this.#canvasHtmlObj;
+    }
+
+    get grid() {
+        return this.#gridHtmlObj;
+    }
 
     set width(newWidth) {
         this.#width = parseInt(newWidth);
@@ -131,9 +133,7 @@ class CollageCanvas {
 
         fileInput.addEventListener('change', () => {
             const file = fileInput.files[0];
-            if (!file || this.#selectedSlotIndex === -1) {
-                return ;
-            }
+            if (!file || this.#selectedSlotIndex === -1) return ;
 
             const imgObj = new Image();
             const selectedSlot = this.#slots[this.#selectedSlotIndex];
@@ -153,9 +153,13 @@ class CollageCanvas {
 
         this.#gridHtmlObj.addEventListener('click', (evt) => {
             const slot = evt.target.closest('.slot');
-            if (!slot) {
-                return ;
-            }
+            if (!slot) return ;
+
+            slot.classList.add('click-animate');
+
+            slot.addEventListener('animationend', () => {
+                slot.classList.remove('click-animate');
+            }, { once: true });
 
             this.#selectedSlotIndex = parseInt(slot.dataset.index);
             fileInput.click();
